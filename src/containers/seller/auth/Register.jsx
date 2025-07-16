@@ -11,17 +11,26 @@ function Register() {
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("nameis required"),
+      name: Yup.string()
+        .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
+        .required("Name is required"),
+
       email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is rquired"),
+        .email("Invalid email format")
+        .required("Email is required"),
+
       password: Yup.string()
-        .min(6, "password must be at least 6 characters")
+        .matches(
+          /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+          "Password must have at least 6 characters, one uppercase letter, one number, and one special character"
+        )
         .required("Password is required"),
+
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Passwords must match")
-        .required("Confim Password your passord"),
+        .required("Please confirm your password"),
     }),
+
     onSubmit: (values) => {
       console.log("From Submitted", values);
       alert("Form Submitted Successfully!");

@@ -10,12 +10,17 @@ const Login = () => {
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .email("Invalid email address")
+        .email("Invalid email format")
         .required("Email is required"),
-      passord: Yup.string()
-        .min(6, "Password must be at least 6 characters")
+
+      password: Yup.string()
+        .matches(
+          /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+          "Invalid password format"
+        )
         .required("Password is required"),
     }),
+
     onSubmit: async (values) => {
       console.log("Login with values:", values);
 
@@ -89,7 +94,9 @@ const Login = () => {
               }`}
             />
             {formik.touched.password && formik.errors.password && (
-                <p className="text-red-500 text-sm mt-1">{formik.errors.password}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {formik.errors.password}
+              </p>
             )}
           </div>
           {/* Submit Button */}
