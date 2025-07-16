@@ -1,16 +1,12 @@
-import React from 'react'
-import Register from './containers/seller/auth/Register'
-import Login from './containers/seller/auth/Login'
+import React from 'react';
+import Router from './Router';
 
 function App() {
- 
-
   return (
     <>
-      <Register />
-       <Login />
+      <Router />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
