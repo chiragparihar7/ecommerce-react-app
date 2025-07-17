@@ -1,8 +1,13 @@
 import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const handleLogin = () => {
+    nevigate("/Login");
+  };
+  const nevigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -103,6 +108,7 @@ const Login = () => {
           <div>
             <button
               type="submit"
+              onClick={handleLogin}
               className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
             >
               Login
