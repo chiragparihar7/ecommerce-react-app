@@ -1,8 +1,12 @@
 import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
 function Register() {
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    navigate("/login"); // Navigate to the login page
+  };
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -136,7 +140,7 @@ function Register() {
           </div>
           {/* Submit */}
           <button
-            type="submit"
+            type="submit" onClick={handleLogin}
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
           >
             Register
