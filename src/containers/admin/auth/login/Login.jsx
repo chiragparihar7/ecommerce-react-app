@@ -11,7 +11,7 @@ const Login = () => {
   };
 
 const handlSubmit = () => {
-   navigate('/Dashboard');
+   navigate('/admin/Dashboard');
 }
 
 const navigate = useNavigate();
