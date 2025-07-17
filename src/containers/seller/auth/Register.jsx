@@ -2,10 +2,13 @@ import { useFormik } from "formik";
 import React from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { SellerRegisterValidationSchema } from "../../../utils/formikValidations";
 function Register() {
   const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/login"); // Navigate to the login page
+  const handleFormSubmit = async(values) => {
+
+    console.log("values", values)
+    navigate("/seller/login"); // Navigate to the login page
   };
   const formik = useFormik({
     initialValues: {
@@ -14,31 +17,9 @@ function Register() {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .matches(/^[A-Za-z\s]+$/, "Name can only contain letters and spaces")
-        .required("Name is required"),
+    validationSchema: SellerRegisterValidationSchema,
 
-      email: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
-
-      password: Yup.string()
-        .matches(
-          /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
-          "Password must have at least 6 characters, one uppercase letter, one number, and one special character"
-        )
-        .required("Password is required"),
-
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords must match")
-        .required("Please confirm your password"),
-    }),
-
-    onSubmit: (values) => {
-      console.log("From Submitted", values);
-      alert("Form Submitted Successfully!");
-    },
+    onSubmit: handleFormSubmit,
   });
 
   return (
@@ -140,7 +121,7 @@ function Register() {
           </div>
           {/* Submit */}
           <button
-            type="submit" onClick={handleLogin}
+            type="submit" 
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
           >
             Register
