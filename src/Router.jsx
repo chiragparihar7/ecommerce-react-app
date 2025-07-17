@@ -1,26 +1,29 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-// import Login from './user/auth/login/Login';
-// import Register from './user/auth/register/Register';
-import Header from './user/layout/Header.jsx';
-import HeroSection from './user/layout/Hero-Section.jsx';
-import Footer from './user/layout/Footer.jsx';
-import Home from './user/layout/Home.jsx';
-
-
+import React from 'react';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from './containers/user/auth/login/Login.jsx';
+import Register from './containers/user/auth/register/Register.jsx';
+import Home from './containers/user/pages/Home.jsx';
+import SellerRegister from "./containers/seller/auth/Register.jsx";
+import SellerLogin from "./containers/seller/auth/Login.jsx";
+import AdminLogin from "./containers/admin/auth/login/Login.jsx";
+import AdminDashboard from "./containers/admin/pages/dashboard/Dashboard.jsx";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* User routes */}
-        {/* <Route path="/" element={<Login />} /> */}
-        {/* <Route path="/login" element={<Login />} /> */}
-        {/* <Route path="/register" element={<Register />} /> */}
-
+        {/* User Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Home />} />
+        
+        {/* Seller Routes */}
+        <Route path="/seller/register" element={<SellerRegister />} />
+        <Route path="/seller/login" element={<SellerLogin />} />
 
-        {/* Admin routes */}
-        {/* Add admin routes here */}
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
