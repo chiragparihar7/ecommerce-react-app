@@ -1,6 +1,7 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import {useNavigate} from 'react-router-dom';
 import './Login.css';
 
 const Login = () => {
@@ -9,6 +10,11 @@ const Login = () => {
     password: ''
   };
 
+const handlSubmit = () => {
+   navigate('/Dashboard');
+}
+
+const navigate = useNavigate();
   const validationSchema = Yup.object({
     adminName: Yup.string()
       .matches(/^[A-Za-z\s]+$/, 'Only letters allowed, no numbers or symbols')
@@ -24,7 +30,7 @@ const Login = () => {
   const onSubmit = (values) => {
     console.log('Admin Name:', values.adminName);
     console.log('Password:', values.password);
-    // Handle login logic here
+   
   };
 
   return (
@@ -60,7 +66,7 @@ const Login = () => {
               <ErrorMessage name="password" component="div" className="error" />
             </div>
 
-            <button type="submit" className="login-button">LOGIN</button>
+            <button type="submit" className="login-button" onClick={handlSubmit} >LOGIN</button>
           </Form>
         </Formik>
       </div>

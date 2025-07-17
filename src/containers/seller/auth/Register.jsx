@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Register() {
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate("/Login"); // Navigate to the login page
+    navigate("/login"); // Navigate to the login page
   };
   const formik = useFormik({
     initialValues: {
