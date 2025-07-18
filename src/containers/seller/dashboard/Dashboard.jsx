@@ -1,6 +1,5 @@
 // src/pages/seller/Dashboard.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 const SalesCard = ({ title, value }) => (
   <div className="p-4 bg-white rounded-xl shadow-md text-center">
