@@ -1,0 +1,68 @@
+/* Header.css */
+
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background-color: #1e1e2f;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.menu {
+  padding-top: 20px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: #2c2c3a;
+}
+
+.icon {
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+.profile {
+  padding: 20px;
+  border-top: 1px solid #444;
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.profile-info {
+  margin-left: 10px;
+}
+
+.name {
+  font-size: 14px;
+  margin: 0;
+}
+
+.role {
+  font-size: 12px;
+  color: #aaa;
+  margin: 0;
+}
+
+
+
+
+

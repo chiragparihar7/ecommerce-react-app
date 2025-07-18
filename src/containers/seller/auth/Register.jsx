@@ -1,15 +1,20 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { SellerRegisterValidationSchema } from "../../../utils/formikValidations";
+
 function Register() {
   const navigate = useNavigate();
-  const handleFormSubmit = async(values) => {
 
-    console.log("values", values)
-    navigate("/seller/login"); // Navigate to the login page
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleFormSubmit = async (values) => {
+    console.log("values", values);
+    navigate("/seller/login");
   };
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -18,7 +23,6 @@ function Register() {
       confirmPassword: "",
     },
     validationSchema: SellerRegisterValidationSchema,
-
     onSubmit: handleFormSubmit,
   });
 
@@ -29,8 +33,7 @@ function Register() {
           Seller Register
         </h2>
         <form onSubmit={formik.handleSubmit} className="space-y-5">
-          {/* name */}
-
+          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Name
@@ -51,6 +54,7 @@ function Register() {
               <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
             )}
           </div>
+
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -72,46 +76,65 @@ function Register() {
               <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
             )}
           </div>
-          {/* Password */}
+
+          {/* Password with eye icon */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
             </label>
-            <input
-              type="password"
-              name="password"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.password}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none ${
-                formik.touched.password && formik.errors.password
-                  ? "border-red-500"
-                  : "border-gray-300 focus:ring-2 focus:ring-blue-500"
-              }`}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.password}
+                className={`w-full px-4 py-2 pr-12 border rounded-md focus:outline-none bg-white ${
+                  formik.touched.password && formik.errors.password
+                    ? "border-red-500"
+                    : "border-gray-300 focus:ring-2 focus:ring-blue-500"
+                }`}
+              />
+              <div
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-0 right-0 h-full px-3 flex items-center cursor-pointer border-l border-gray-300 text-gray-500"
+              >
+                {showPassword ? "👁️‍🗨️" : "👁️"}
+              </div>
+            </div>
             {formik.touched.password && formik.errors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {formik.errors.password}
               </p>
             )}
           </div>
-          {/* Confirm Password */}
+
+          {/* Confirm Password with eye icon */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm Password
             </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.confirmPassword}
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none ${
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-                  ? "border-red-500"
-                  : "border-gray-300 focus:ring-2 focus:ring-blue-500"
-              }`}
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.confirmPassword}
+                className={`w-full px-4 py-2 pr-12 border rounded-md focus:outline-none bg-white ${
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                    ? "border-red-500"
+                    : "border-gray-300 focus:ring-2 focus:ring-blue-500"
+                }`}
+              />
+              <div
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute top-0 right-0 h-full px-3 flex items-center cursor-pointer border-l border-gray-300 text-gray-500"
+              >
+                {showConfirmPassword ? "👁️‍🗨️" : "👁️"}
+              </div>
+            </div>
             {formik.touched.confirmPassword &&
               formik.errors.confirmPassword && (
                 <p className="text-red-500 text-sm mt-1">
@@ -119,13 +142,26 @@ function Register() {
                 </p>
               )}
           </div>
+
           {/* Submit */}
           <button
-            type="submit" 
+            type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
           >
             Register
           </button>
+
+          
+          {/* ✅ Added Login Link Here */}
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Already have an account?{" "}
+            <span
+              className="text-blue-600 cursor-pointer hover:underline"
+              onClick={() => navigate("/seller/login")}
+            >
+              Login here
+            </span>
+          </p>
         </form>
       </div>
     </div>
