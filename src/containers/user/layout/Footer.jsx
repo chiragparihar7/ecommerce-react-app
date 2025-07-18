@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import React from 'react';
 import { FaFacebook, FaInstagram, FaTwitter, FaGithub, FaYoutube } from 'react-icons/fa';
-=======
-// Footer.jsx (React Component, or use in plain HTML as needed)
-
-import { FaFacebook, FaInstagram, FaTwitter, FaGithub } from 'react-icons/fa';
->>>>>>> 045e3db9e080c73416410454299ab3d1198da778
 
 const Footer = () => {
   return (
