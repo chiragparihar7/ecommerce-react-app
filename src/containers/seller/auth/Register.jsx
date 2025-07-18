@@ -122,7 +122,8 @@ function Register() {
                 onBlur={formik.handleBlur}
                 value={formik.values.confirmPassword}
                 className={`w-full px-4 py-2 pr-12 border rounded-md focus:outline-none bg-white ${
-                  formik.touched.confirmPassword && formik.errors.confirmPassword
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
                     ? "border-red-500"
                     : "border-gray-300 focus:ring-2 focus:ring-blue-500"
                 }`}
@@ -134,11 +135,12 @@ function Register() {
                 {showConfirmPassword ? "👁️‍🗨️" : "👁️"}
               </div>
             </div>
-            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-1">
-                {formik.errors.confirmPassword}
-              </p>
-            )}
+            {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">
+                  {formik.errors.confirmPassword}
+                </p>
+              )}
           </div>
 
           {/* Submit */}
@@ -148,6 +150,18 @@ function Register() {
           >
             Register
           </button>
+
+          
+          {/* ✅ Added Login Link Here */}
+          <p className="text-center text-sm text-gray-600 mt-4">
+            Already have an account?{" "}
+            <span
+              className="text-blue-600 cursor-pointer hover:underline"
+              onClick={() => navigate("/seller/login")}
+            >
+              Login here
+            </span>
+          </p>
         </form>
       </div>
     </div>

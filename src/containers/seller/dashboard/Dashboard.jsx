@@ -65,7 +65,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => (
       <button
         onClick={() => {
           localStorage.removeItem("authToken");
-          window.location.href = "/login"; // or use navigate()
+          window.location.href = "/seller/login"; // or use navigate()
         }}
         className="text-red-500 text-sm hover:underline"
       >

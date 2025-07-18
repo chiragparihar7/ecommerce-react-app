@@ -32,7 +32,8 @@ const Login = () => {
         };
 
         if (
-          values.email.trim().toLowerCase() === fakeSeller.email.toLowerCase() &&
+          values.email.trim().toLowerCase() ===
+            fakeSeller.email.toLowerCase() &&
           values.password.trim() === fakeSeller.password
         ) {
           alert("Login Successful!");
@@ -118,6 +119,17 @@ const Login = () => {
               Login
             </button>
           </div>
+          {/* Added Register Link Here*/}
+
+          <p className="text-center text-sm text-gray-600">
+            Don't have an account?{" "}
+            <span
+              className="text-blue-500 cursor-pointer hover:underline"
+              onClick={() => navigate("/seller/register")}
+            >
+              Register
+            </span>
+          </p>
         </form>
       </div>
     </div>
