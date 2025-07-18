@@ -6,7 +6,7 @@ import AdminLogin from './containers/admin/auth/login/Login'
 import AdminDashboard from './containers/admin/pages/dashboard/Dashboard'
 import Register from './user/auth/register/Register';
 import Login from './user/auth/login/Login';
-
+import SellerDashboard from './containers/seller/dashboard/Dashboard';
 const Router = () => {
   return (
     <BrowserRouter>
@@ -15,6 +15,7 @@ const Router = () => {
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister/>} />
         <Route path="/seller/login" element={<SellerLogin/>} />
+        <Route path="seller/dashboard" element={<SellerDashboard/>} />
 
 
 
