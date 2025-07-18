@@ -1,206 +1,66 @@
-// src/pages/seller/Dashboard.jsx
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import DashboardHome from "./DashboardHome";
+import ProductManagement from "./ProductManagement";
 
-const SalesCard = ({ title, value }) => (
-  <div className="p-4 bg-white rounded-xl shadow-md text-center">
-    <h4 className="text-md text-gray-600">{title}</h4>
-    <p className="text-2xl font-bold text-blue-600">{value}</p>
-  </div>
-);
 
-const RecentOrdersTable = ({ orders }) => (
-  <div className="overflow-x-auto mt-6">
-    <table className="min-w-full text-left text-sm">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="p-2">Order ID</th>
-          <th className="p-2">Customer</th>
-          <th className="p-2">Status</th>
-          <th className="p-2">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map((order) => (
-          <tr key={order.id} className="border-b">
-            <td className="p-2">{order.id}</td>
-            <td className="p-2">{order.customer}</td>
-            <td className="p-2 text-yellow-600">{order.status}</td>
-            <td className="p-2">${order.total}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-const Sidebar = ({ activeTab, setActiveTab }) => (
-  <div className="w-64 h-screen flex flex-col bg-white border-r p-4">
-    <div>
+  const tabs = [
+    { name: "Dashboard", path: "/seller/dashboard" },
+    { name: "Product Management", path: "/seller/dashboard/products" },
+    { name: "Order Management", path: "/seller/dashboard/orders" },
+  ];
+
+  return (
+    <div className="w-64 h-screen flex flex-col bg-white border-r p-4">
       <h2 className="text-xl font-bold mb-6">Seller Panel</h2>
       <ul className="space-y-2">
-        {["Dashboard", "Product Management", "Order Management"].map((tab) => (
+        {tabs.map((tab) => (
           <li
-            key={tab}
+            key={tab.name}
+            onClick={() => navigate(tab.path)}
             className={`cursor-pointer p-2 rounded-md hover:bg-gray-100 ${
-              activeTab === tab ? "bg-blue-100 text-blue-600 font-semibold" : ""
+              location.pathname === tab.path ? "bg-blue-100 text-blue-600 font-semibold" : ""
             }`}
-            onClick={() => setActiveTab(tab)}
           >
-            {tab}
+            {tab.name}
           </li>
         ))}
       </ul>
-    </div>
 
-    {/* Bottom Profile Section */}
-    <div className="mt-auto pt-4 border-t">
-      <div className="flex items-center space-x-3 mb-2">
-        <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-        <div>
-          <p className="text-sm font-medium">Seller Name</p>
-          <p className="text-xs text-gray-500">seller@example.com</p>
+      {/* Bottom Profile Section */}
+      <div className="mt-auto pt-4 border-t">
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+          <div>
+            <p className="text-sm font-medium">Seller Name</p>
+            <p className="text-xs text-gray-500">seller@example.com</p>
+          </div>
         </div>
+        <button
+          onClick={() => {
+            localStorage.removeItem("authToken");
+            navigate("/seller/login");
+          }}
+          className="text-red-500 text-sm hover:underline"
+        >
+          Logout
+        </button>
       </div>
-      <button
-        onClick={() => {
-          localStorage.removeItem("authToken");
-          window.location.href = "/seller/login"; // or use navigate()
-        }}
-        className="text-red-500 text-sm hover:underline"
-      >
-        Logout
-      </button>
-    </div>
-  </div>
-);
-
-const DashboardContent = ({ summary, orders }) => (
-  <div className="p-6 bg-gray-50 w-full">
-    <h1 className="text-2xl font-bold mb-6">Seller Dashboard</h1>
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <SalesCard title="Total Sales" value={summary.totalSales} />
-      <SalesCard title="Revenue" value={`$${summary.revenue}`} />
-      <SalesCard title="Pending Orders" value={summary.pendingOrders} />
-      <SalesCard title="Cancelled Orders" value={summary.cancelledOrders} />
-    </div>
-    <RecentOrdersTable orders={orders} />
-  </div>
-);
-
-const ProductManagement = () => {
-  const [products, setProducts] = useState([
-    {
-      id: "PROD1",
-      name: "T-Shirt",
-      price: 499,
-      stock: 20,
-      status: "Active",
-    },
-    {
-      id: "PROD2",
-      name: "Jeans",
-      price: 999,
-      stock: 10,
-      status: "Inactive",
-    },
-    {
-      id: "PROD3",
-      name: "Shoes",
-      price: 1500,
-      stock: 5,
-      status: "Active",
-    },
-  ]);
-
-  const handleDelete = (id) => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
-    if (confirm) {
-      setProducts(products.filter((product) => product.id !== id));
-    }
-  };
-
-  return (
-    <div className="p-6 w-full">
-      <h1 className="text-2xl font-bold mb-4">Product Management</h1>
-      <table className="min-w-full bg-white shadow-md rounded-xl overflow-hidden">
-        <thead className="bg-gray-100 text-gray-700 text-sm">
-          <tr>
-            <th className="px-4 py-2 text-left">Product ID</th>
-            <th className="px-4 py-2 text-left">Name</th>
-            <th className="px-4 py-2 text-left">Price</th>
-            <th className="px-4 py-2 text-left">Stock</th>
-            <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm">
-          {products.map((product) => (
-            <tr key={product.id} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-2">{product.id}</td>
-              <td className="px-4 py-2">{product.name}</td>
-              <td className="px-4 py-2">₹{product.price}</td>
-              <td className="px-4 py-2">{product.stock}</td>
-              <td className="px-4 py-2">{product.status}</td>
-              <td className="px-4 py-2 space-x-2">
-                <button
-                  className="text-blue-600 hover:underline"
-                  onClick={() => alert(`Edit ${product.name}`)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="text-red-600 hover:underline"
-                  onClick={() => handleDelete(product.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 };
 
-const OrderManagement = () => (
-  <div className="p-6 w-full">
-    <h1 className="text-2xl font-bold">Order Management</h1>
-    <p className="mt-4">View and manage your customer orders here.</p>
-  </div>
-);
-
 const Dashboard = () => {
-  const [summary, setSummary] = useState({});
-  const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState("Dashboard");
-
-  useEffect(() => {
-    setSummary({
-      totalSales: 120,
-      revenue: 85430,
-      pendingOrders: 5,
-      cancelledOrders: 3,
-    });
-    setOrders([
-      { id: "ORD123", customer: "Alice", status: "Pending", total: 250 },
-      { id: "ORD124", customer: "Bob", status: "Shipped", total: 180 },
-      { id: "ORD125", customer: "Carol", status: "Cancelled", total: 90 },
-      { id: "ORD125", customer: "Carol", status: "Cancelled", total: 90 },
-    ]);
-  }, []);
-
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === "Dashboard" && (
-        <DashboardContent summary={summary} orders={orders} />
-      )}
-      {activeTab === "Product Management" && <ProductManagement />}
-      {activeTab === "Order Management" && <OrderManagement />}
+      <Sidebar />
+      <div className="flex-1">
+        <Outlet /> 
+      </div>
     </div>
   );
 };
