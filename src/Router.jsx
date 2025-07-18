@@ -7,6 +7,7 @@ import SellerRegister from "./containers/seller/auth/Register.jsx";
 import SellerLogin from "./containers/seller/auth/Login.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/Dashboard.jsx";
+import SellerDashboard from "./containers/seller/dashboard/Dashboard.jsx";
 
 const Router = () => {
   return (
@@ -20,6 +21,7 @@ const Router = () => {
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
+        <Route path="/seller/dashboard" element={<SellerDashboard />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
