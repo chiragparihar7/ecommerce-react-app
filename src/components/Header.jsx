@@ -1,17 +1,31 @@
 import React from 'react';
 import './Header.css';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+    navigate('/admin/categorys'); 
+  };
+    const handleSubmit2 = () => {
+    navigate('/admin/dashboard'); 
+  };
+
   return (
     <div className="sidebar">
       <div className="menu">
         <div className="menu-item">
           <i className="icon">🏠</i>
-          <span>Dashboard</span>
+             <button className="menu-button" onClick={handleSubmit2}>
+            Dashboard
+          </button>
         </div>
         <div className="menu-item">
           <i className="icon">📨</i>
-          <span>Tickets</span>
+          <button className="menu-button" onClick={handleSubmit}>
+            Category
+          </button>
         </div>
         <div className="menu-item">
           <i className="icon">👥</i>

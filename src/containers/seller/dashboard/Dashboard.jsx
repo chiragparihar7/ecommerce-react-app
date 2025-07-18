@@ -1,7 +1,12 @@
+
 import React from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import DashboardHome from "./DashboardHome";
 import ProductManagement from "./ProductManagement";
+
+// src/pages/seller/Dashboard.jsx
+import React, { useEffect, useState } from "react";
+
 
 
 const Sidebar = () => {

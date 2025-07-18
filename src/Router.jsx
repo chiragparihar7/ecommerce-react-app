@@ -11,6 +11,8 @@ import SellerDashboard from "./containers/seller/dashboard/Dashboard.jsx";
 import DashboardHome from "./containers/seller/dashboard/DashboardHome.jsx";
 import ProductManagement from "./containers/seller/dashboard/ProductManagement.jsx";
 import AddProduct from "./containers/seller/dashboard/AddProduct.jsx";
+import Categorys from './containers/admin/pages/category/Categorys.jsx';
+
 const Router = () => {
   return (
     <BrowserRouter>
@@ -32,6 +34,7 @@ const Router = () => {
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/categorys" element={<Categorys />} />
       </Routes>
     </BrowserRouter>
   );
