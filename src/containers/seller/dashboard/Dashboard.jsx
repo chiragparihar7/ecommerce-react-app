@@ -39,11 +39,11 @@ const Sidebar = ({ activeTab, setActiveTab }) => (
     <div>
       <h2 className="text-xl font-bold mb-6">Seller Panel</h2>
       <ul className="space-y-2">
-        {['Dashboard', 'Product Management', 'Order Management'].map((tab) => (
+        {["Dashboard", "Product Management", "Order Management"].map((tab) => (
           <li
             key={tab}
             className={`cursor-pointer p-2 rounded-md hover:bg-gray-100 ${
-              activeTab === tab ? 'bg-blue-100 text-blue-600 font-semibold' : ''
+              activeTab === tab ? "bg-blue-100 text-blue-600 font-semibold" : ""
             }`}
             onClick={() => setActiveTab(tab)}
           >
@@ -88,12 +88,83 @@ const DashboardContent = ({ summary, orders }) => (
   </div>
 );
 
-const ProductManagement = () => (
-  <div className="p-6 w-full">
-    <h1 className="text-2xl font-bold">Product Management</h1>
-    <p className="mt-4">List, edit, or remove your products here.</p>
-  </div>
-);
+const ProductManagement = () => {
+  const [products, setProducts] = useState([
+    {
+      id: "PROD1",
+      name: "T-Shirt",
+      price: 499,
+      stock: 20,
+      status: "Active",
+    },
+    {
+      id: "PROD2",
+      name: "Jeans",
+      price: 999,
+      stock: 10,
+      status: "Inactive",
+    },
+    {
+      id: "PROD3",
+      name: "Shoes",
+      price: 1500,
+      stock: 5,
+      status: "Active",
+    },
+  ]);
+
+  const handleDelete = (id) => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (confirm) {
+      setProducts(products.filter((product) => product.id !== id));
+    }
+  };
+
+  return (
+    <div className="p-6 w-full">
+      <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+      <table className="min-w-full bg-white shadow-md rounded-xl overflow-hidden">
+        <thead className="bg-gray-100 text-gray-700 text-sm">
+          <tr>
+            <th className="px-4 py-2 text-left">Product ID</th>
+            <th className="px-4 py-2 text-left">Name</th>
+            <th className="px-4 py-2 text-left">Price</th>
+            <th className="px-4 py-2 text-left">Stock</th>
+            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {products.map((product) => (
+            <tr key={product.id} className="border-b hover:bg-gray-50">
+              <td className="px-4 py-2">{product.id}</td>
+              <td className="px-4 py-2">{product.name}</td>
+              <td className="px-4 py-2">₹{product.price}</td>
+              <td className="px-4 py-2">{product.stock}</td>
+              <td className="px-4 py-2">{product.status}</td>
+              <td className="px-4 py-2 space-x-2">
+                <button
+                  className="text-blue-600 hover:underline"
+                  onClick={() => alert(`Edit ${product.name}`)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="text-red-600 hover:underline"
+                  onClick={() => handleDelete(product.id)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 const OrderManagement = () => (
   <div className="p-6 w-full">
@@ -125,7 +196,9 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === "Dashboard" && <DashboardContent summary={summary} orders={orders} />}
+      {activeTab === "Dashboard" && (
+        <DashboardContent summary={summary} orders={orders} />
+      )}
       {activeTab === "Product Management" && <ProductManagement />}
       {activeTab === "Order Management" && <OrderManagement />}
     </div>
