@@ -7,6 +7,8 @@ import SellerRegister from "./containers/seller/auth/Register.jsx";
 import SellerLogin from "./containers/seller/auth/Login.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/Dashboard.jsx";
+import Profile from './containers/user/pages/Profile.jsx';
+import ProductList from './containers/user/pages/ProductList.jsx';
 
 const Router = () => {
   return (
@@ -16,7 +18,9 @@ const Router = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Home />} />
-        
+        <Route path="/profile" element={<Profile />} />
+        <Route path='productlist' element={<ProductList />} />
+
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
