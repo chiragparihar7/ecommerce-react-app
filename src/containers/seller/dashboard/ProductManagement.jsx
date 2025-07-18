@@ -16,6 +16,7 @@ const ProductManagement = () => {
 
   const handleAddProduct = () => {
     // In real app, show a form or modal
+    
     const newProduct = {
       id: `PROD${products.length + 1}`,
       name: "New Product",
