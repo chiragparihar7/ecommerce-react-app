@@ -1,7 +1,6 @@
 // Footer.jsx (React Component, or use in plain HTML as needed)
 
 import { FaFacebook, FaInstagram, FaTwitter, FaGithub } from 'react-icons/fa';
-import Footer from '../layout/Footer.jsx';
 
 const Footer = () => {
   return (
