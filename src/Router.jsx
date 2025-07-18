@@ -1,32 +1,29 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-// import Login from './containers/admin/auth/login/Login'
-import SellerLogin from './containers/seller/auth/Login';
-import SellerRegister from './containers/seller/auth/Register'; 
-import AdminLogin from './containers/admin/auth/login/Login'
-import AdminDashboard from './containers/admin/pages/dashboard/Dashboard'
-import Register from './user/auth/register/Register';
-import Login from './user/auth/login/Login';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from './containers/user/auth/login/Login.jsx';
+import Register from './containers/user/auth/register/Register.jsx';
+import Home from './containers/user/pages/Home.jsx';
+import SellerRegister from "./containers/seller/auth/Register.jsx";
+import SellerLogin from "./containers/seller/auth/Login.jsx";
+import AdminLogin from "./containers/admin/auth/login/Login.jsx";
+import AdminDashboard from "./containers/admin/pages/dashboard/Dashboard.jsx";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-      
-        {/* Seller Routes */}
-        <Route path="/seller/register" element={<SellerRegister/>} />
-        <Route path="/seller/login" element={<SellerLogin/>} />
-
-
-
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin/>} />
-        <Route path='/admin/dashboard' element={<AdminDashboard />} />
-        
-
-
         {/* User Routes */}
         <Route path="/login" element={<Login />} />
-        <Route path='/register' element={<Register />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Home />} />
+        
+        {/* Seller Routes */}
+        <Route path="/seller/register" element={<SellerRegister />} />
+        <Route path="/seller/login" element={<SellerLogin />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
