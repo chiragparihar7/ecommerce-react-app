@@ -1,13 +1,6 @@
-
-import React from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import DashboardHome from "./DashboardHome";
-import ProductManagement from "./ProductManagement";
-
 // src/pages/seller/Dashboard.jsx
 import React, { useEffect, useState } from "react";
-
-
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -28,7 +21,9 @@ const Sidebar = () => {
             key={tab.name}
             onClick={() => navigate(tab.path)}
             className={`cursor-pointer p-2 rounded-md hover:bg-gray-100 ${
-              location.pathname === tab.path ? "bg-blue-100 text-blue-600 font-semibold" : ""
+              location.pathname === tab.path
+                ? "bg-blue-100 text-blue-600 font-semibold"
+                : ""
             }`}
           >
             {tab.name}
@@ -63,8 +58,8 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1">
-        <Outlet /> 
+      <div className="flex-1 p-6">
+        <Outlet />
       </div>
     </div>
   );
