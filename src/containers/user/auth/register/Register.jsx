@@ -9,7 +9,7 @@ const RegisterFormSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  mobileNo: Yup.string()
+  mobile: Yup.string()
     .matches(/^\d{10}$/, "Mobile number must be 10 digits")
     .required("Mobile number is required"),
   address: Yup.string()
@@ -34,7 +34,7 @@ const Register = () => {
     initialValues: {
       name: "",
       email: "",
-      mobileNo: "",
+      mobile: "",
       address: "",
       password: "",
       confirmPassword: "",
@@ -89,17 +89,17 @@ const Register = () => {
           <div>
             <label className="block mb-1 font-medium">Mobile No</label>
             <input
-              id="mobileNo"
-              name="mobileNo"
+              id="mobile"
+              name="mobile"
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.mobileNo}
+              value={formik.values.mobile}
               placeholder="Enter 10-digit mobile no"
               className="w-full p-2 border border-gray-300 rounded"
             />
-            {formik.touched.mobileNo && formik.errors.mobileNo && (
-              <p className="text-red-500 text-sm">{formik.errors.mobileNo}</p>
+            {formik.touched.mobile && formik.errors.mobile && (
+              <p className="text-red-500 text-sm">{formik.errors.mobile}</p>
             )}
           </div>
 
