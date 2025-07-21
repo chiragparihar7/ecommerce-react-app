@@ -1,6 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axiosInstance from "../../../../utils/axiosInstance"; //
+import { useNavigate } from "react-router-dom";
 
 const LoginFormSchema = Yup.object({
   email: Yup.string()
@@ -9,11 +11,22 @@ const LoginFormSchema = Yup.object({
   password: Yup.string().required("Password is required"),
 });
 
-const handleLogin = (values) => {
-  console.log("Login Successful", values);
-};
-
 const Login = () => {
+  const navigate = useNavigate();
+  const handleLogin = async (values) => {
+    try {
+      const res = await axiosInstance.post("/user/login", values);
+      alert("Login Successful");
+      localStorage.setItem("token", res.data.token);
+       navigate("/"); 
+    } catch (error) {
+      alert("Login Failed");
+      console.log(error.response?.data?.message || "An error occurred");
+    }
+
+    
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -29,6 +42,7 @@ const Login = () => {
       className="border border-black max-w-md p-5 mx-auto rounded shadow-xl m-5"
     >
       <h1 className="font-bold text-lg mb-4">Login Form</h1>
+
       <div className="mb-4">
         <label className="block mb-1">Email</label>
         <input
@@ -65,13 +79,17 @@ const Login = () => {
 
       <button
         type="submit"
-        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" onClick={handleLogin}
+        className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
       >
         Login
       </button>
+
       <p className="mt-4 text-sm">
-        Don't have an account? <a href="/Register" className="text-blue-500">Register here</a>
-        </p>
+        Don't have an account?{" "}
+        <a href="/Register" className="text-blue-500">
+          Register here
+        </a>
+      </p>
     </form>
   );
 };

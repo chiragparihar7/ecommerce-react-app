@@ -12,8 +12,17 @@ import AddProduct from './containers/seller/dashboard/AddProduct.jsx';
 import Categorys from './containers/admin/pages/category/Categorys.jsx';
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/Dashboard.jsx";
+
+import SellerDashboard from "./containers/seller/dashboard/Dashboard.jsx";
+import DashboardHome from "./containers/seller/dashboard/DashboardHome.jsx";
+import ProductManagement from "./containers/seller/dashboard/ProductManagement.jsx";
+import AddProduct from "./containers/seller/dashboard/AddProduct.jsx";
+import Categorys from "./containers/admin/pages/category/Categorys.jsx";
+import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
+
 import Profile from './containers/user/pages/Profile.jsx';
 import ProductList from './containers/user/pages/ProductList.jsx';
+
 
 const Router = () => {
   return (
@@ -32,7 +41,9 @@ const Router = () => {
         <Route path="/seller/dashboard" element={<SellerDashboard />}>
           <Route index element={<DashboardHome />} />
           <Route path="products" element={<ProductManagement />} />
+          {/* Add Product Route */}
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="orders" element={<OrderManagement />} />
         </Route>
 
         {/* Admin Routes */}

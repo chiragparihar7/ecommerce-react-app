@@ -1,6 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axiosInstance from "../../../../utils/axiosInstance";
+
 
 const RegisterFormSchema = Yup.object({
   name: Yup.string()
@@ -27,6 +29,14 @@ const RegisterFormSchema = Yup.object({
 
 const handleFormSubmission = (values) => {
   console.log("Successful form submission", values);
+  try {
+    const res =  axiosInstance.post("/user/signup", values);
+    alert("Registration Successful!");
+    console.log("Response:", res.data);
+  } catch (error) {
+    alert("Registration Failed!");
+    console.log(error.response?.data?.message || "Something went wrong");
+  }
 };
 
 const Register = () => {
