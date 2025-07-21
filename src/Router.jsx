@@ -12,7 +12,7 @@ import DashboardHome from "./containers/seller/dashboard/DashboardHome.jsx";
 import ProductManagement from "./containers/seller/dashboard/ProductManagement.jsx";
 import AddProduct from "./containers/seller/dashboard/AddProduct.jsx";
 import Categorys from "./containers/admin/pages/category/Categorys.jsx";
-import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
+
 
 const Router = () => {
   return (
