@@ -14,6 +14,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow p-4 flex justify-between items-center relative">
+      {/* Logo and Brand Name */}
       <div className="text-blue-600 text-xl font-bold flex items-center">
         <img
           src="/src/assets/Logo.jpg"
@@ -23,13 +24,16 @@ const Header = () => {
         QUICKCART
       </div>
 
+      {/* Search Input */}
       <input
         type="text"
         placeholder="Search for Products, Brands and More"
         className="w-1/2 p-2 border rounded"
       />
 
+      {/* Right-side Menu */}
       <div className="space-x-4 flex items-center relative">
+        {/* Profile Dropdown */}
         <div className="relative">
           <button
             onClick={handleDropdownToggle}
@@ -87,6 +91,7 @@ const Header = () => {
           )}
         </div>
 
+        {/* Cart */}
         <button className="text-sm font-medium flex items-center">
           <img
             src="/src/assets/Cart-icon.png"
@@ -96,6 +101,7 @@ const Header = () => {
           Cart
         </button>
 
+        {/* Become a Seller */}
         <button className="text-sm font-medium flex items-center">
           <img
             src="/src/assets/Shop-icon.png"
@@ -104,6 +110,14 @@ const Header = () => {
           />
           Become a Seller
         </button>
+
+        {/* ✅ Login Button */}
+        <Link
+          to="/login"
+          className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
+        >
+          Login
+        </Link>
       </div>
     </header>
   );
