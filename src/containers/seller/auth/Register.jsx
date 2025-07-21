@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { SellerRegisterValidationSchema } from "../../../utils/formikValidations";
-
+import axiosInstance from "../../../utils/axiosInstance";
 function Register() {
   const navigate = useNavigate();
 
@@ -11,8 +11,19 @@ function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmit = async (values) => {
-    console.log("values", values);
-    navigate("/seller/login");
+    try {
+      // Send form data to backend
+      const res = await axiosInstance.post("/seller/signup", values);
+
+      alert("Registration Successful");
+      navigate("/seller/login"); // Redirect after successful registration
+    } catch (error) {
+      console.error("Registration Error:", error);
+      alert(
+        error.response?.data?.message ||
+          "Something went wrong during registration"
+      );
+    }
   };
 
   const formik = useFormik({
@@ -151,7 +162,6 @@ function Register() {
             Register
           </button>
 
-          
           {/* ✅ Added Login Link Here */}
           <p className="text-center text-sm text-gray-600 mt-4">
             Already have an account?{" "}

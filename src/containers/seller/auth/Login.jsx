@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-
+import axiosInstance from "../../../utils/axiosInstance";
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -26,25 +26,14 @@ const Login = () => {
 
     onSubmit: async (values) => {
       try {
-        const fakeSeller = {
-          email: "admin123@gmail.com",
-          password: "Admin@123",
-        };
+        const response = await axiosInstance.post("/seller/login", values);
 
-        if (
-          values.email.trim().toLowerCase() ===
-            fakeSeller.email.toLowerCase() &&
-          values.password.trim() === fakeSeller.password
-        ) {
-          alert("Login Successful!");
-          localStorage.setItem("authToken", "fakeToken123");
-          navigate("/seller/dashboard");
-        } else {
-          alert("Invalid credentials, please try again.");
-        }
+        alert("Login Successful!");
+        localStorage.setItem("authToken", response.data.token);
+        navigate("/seller/dashboard");
       } catch (error) {
-        alert("Something went wrong, please try again later.");
         console.error("Login error:", error);
+        alert(error.response?.data?.message || "Login failed");
       }
     },
   });
