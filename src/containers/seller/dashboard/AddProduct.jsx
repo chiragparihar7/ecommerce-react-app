@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import axios from "../../../utils/axiosInstance";
 const AddProduct = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -24,8 +24,30 @@ const AddProduct = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted Product:", formData);
-    alert("Product added successfully!");
-    // TODO: Handle backend API call
+    const token = localStorage.getItem("token"); // or "authToken" if that’s your key
+
+  const data = new FormData();
+  data.append("name", formData.name);
+  data.append("description", formData.description);
+  data.append("category", formData.category);
+  data.append("stock", formData.stock);
+  data.append("price", formData.price);
+  data.append("image", formData.image);
+
+  try {
+    const res =  axios.post("/seller/product", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    alert("✅ Product added successfully!");
+    console.log("Server response:", res.data);
+  } catch (err) {
+    console.error("❌ Error adding product:", err.response?.data?.message || err.message);
+    alert("❌ Failed to add product");
+  }
   };
 
   return (

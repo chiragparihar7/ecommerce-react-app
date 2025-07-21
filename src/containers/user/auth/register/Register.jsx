@@ -1,6 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axiosInstance from "../../../../utils/axiosInstance";
+
 
 const RegisterFormSchema = Yup.object({
   name: Yup.string()
@@ -9,7 +11,7 @@ const RegisterFormSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  mobileNo: Yup.string()
+  mobile: Yup.string()
     .matches(/^\d{10}$/, "Mobile number must be 10 digits")
     .required("Mobile number is required"),
   address: Yup.string()
@@ -27,6 +29,14 @@ const RegisterFormSchema = Yup.object({
 
 const handleFormSubmission = (values) => {
   console.log("Successful form submission", values);
+  try {
+    const res =  axiosInstance.post("/user/signup", values);
+    alert("Registration Successful!");
+    console.log("Response:", res.data);
+  } catch (error) {
+    alert("Registration Failed!");
+    console.log(error.response?.data?.message || "Something went wrong");
+  }
 };
 
 const Register = () => {
@@ -34,7 +44,7 @@ const Register = () => {
     initialValues: {
       name: "",
       email: "",
-      mobileNo: "",
+      mobile: "",
       address: "",
       password: "",
       confirmPassword: "",
@@ -89,17 +99,17 @@ const Register = () => {
           <div>
             <label className="block mb-1 font-medium">Mobile No</label>
             <input
-              id="mobileNo"
-              name="mobileNo"
+              id="mobile"
+              name="mobile"
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              value={formik.values.mobileNo}
+              value={formik.values.mobile}
               placeholder="Enter 10-digit mobile no"
               className="w-full p-2 border border-gray-300 rounded"
             />
-            {formik.touched.mobileNo && formik.errors.mobileNo && (
-              <p className="text-red-500 text-sm">{formik.errors.mobileNo}</p>
+            {formik.touched.mobile && formik.errors.mobile && (
+              <p className="text-red-500 text-sm">{formik.errors.mobile}</p>
             )}
           </div>
 

@@ -1,12 +1,10 @@
-
-import React from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import DashboardHome from "./DashboardHome";
 import ProductManagement from "./ProductManagement";
 
 // src/pages/seller/Dashboard.jsx
 import React, { useEffect, useState } from "react";
-
+import axios from "../../../utils/axiosInstance";
 
 
 const Sidebar = () => {
@@ -60,6 +58,25 @@ const Sidebar = () => {
 };
 
 const Dashboard = () => {
+   useEffect(() => {
+    const fetchSellerOrders = async () => {
+      const token = localStorage.getItem("token");
+
+      try {
+        const res = await axios.get("/seller/orders", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setOrders(res.data.orders);
+      } catch (err) {
+        console.error("Failed to fetch seller orders", err.response?.data?.message);
+      }
+    };
+
+    fetchSellerOrders();
+  }, []);
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />

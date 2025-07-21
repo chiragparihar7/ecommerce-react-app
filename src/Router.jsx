@@ -11,7 +11,8 @@ import SellerDashboard from "./containers/seller/dashboard/Dashboard.jsx";
 import DashboardHome from "./containers/seller/dashboard/DashboardHome.jsx";
 import ProductManagement from "./containers/seller/dashboard/ProductManagement.jsx";
 import AddProduct from "./containers/seller/dashboard/AddProduct.jsx";
-import Categorys from './containers/admin/pages/category/Categorys.jsx';
+import Categorys from "./containers/admin/pages/category/Categorys.jsx";
+import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 
 const Router = () => {
   return (
@@ -28,7 +29,9 @@ const Router = () => {
         <Route path="/seller/dashboard" element={<SellerDashboard />}>
           <Route index element={<DashboardHome />} />
           <Route path="products" element={<ProductManagement />} />
+          {/* Add Product Route */}
           <Route path="add-product" element={<AddProduct />} />
+          <Route path="orders" element={<OrderManagement />} />
         </Route>
 
         {/* Admin Routes */}
