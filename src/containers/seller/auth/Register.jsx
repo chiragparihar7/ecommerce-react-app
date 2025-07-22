@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { SellerRegisterValidationSchema } from "../../../utils/formikValidations";
-import axiosInstance from "../../../utils/axiosInstance";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function Register() {
   const navigate = useNavigate();
 
@@ -12,13 +16,13 @@ function Register() {
 
   const handleFormSubmit = async (values) => {
     try {
-      const res = await axiosInstance.post("/user/signup", values);
-
-      alert("Registration Successful");
-      navigate("/user/login"); 
+      // Send form data to backend
+      const response = await DataService().post(API.SELLER_SIGNUP, values);
+      toast.success("Registration Successful");
+      navigate("/seller/login"); // Redirect after successful registration
     } catch (error) {
       console.error("Registration Error:", error);
-      alert(
+      toast.error(
         error.response?.data?.message ||
           "Something went wrong during registration"
       );
