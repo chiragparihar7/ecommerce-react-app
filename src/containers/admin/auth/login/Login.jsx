@@ -1,24 +1,24 @@
 import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Login.css';
+import DataService from '../../../../config/DataService';
+import { API } from '../../../../config/API';
+
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const initialValues = {
-    adminName: '',
+    email: '',
     password: ''
   };
 
-const handlSubmit = () => {
-   navigate('/admin/Dashboard');
-}
-
-const navigate = useNavigate();
   const validationSchema = Yup.object({
-    adminName: Yup.string()
-      .matches(/^[A-Za-z\s]+$/, 'Only letters allowed, no numbers or symbols')
-      .required('Admin name is required'),
+    email: Yup.string().email()
+      .required('Email is required'),
 
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters')
@@ -27,10 +27,23 @@ const navigate = useNavigate();
       .required('Password is required')
   });
 
-  const onSubmit = (values) => {
-    console.log('Admin Name:', values.adminName);
-    console.log('Password:', values.password);
-   
+  const onSubmit = async (values, { setSubmitting }) => {
+    try {
+      const response = await DataService().post(API.ADMIN_LOGIN, values);
+
+      if (response.data.token) {
+        localStorage.setItem('adminToken', response.data.token);
+        alert('Login successful!');
+        navigate('/admin/dashboard');
+      } else {
+        alert('Login failed');
+      }
+    } catch (error) {
+
+      alert(error.response?.data?.message || 'Login failed!');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -43,31 +56,39 @@ const navigate = useNavigate();
           validationSchema={validationSchema}
           onSubmit={onSubmit}
         >
-          <Form>
-            <div className="input-group">
-              <label htmlFor="adminName">ADMIN-NAME</label>
-              <Field
-                type="text"
-                id="adminName"
-                name="adminName"
-                placeholder="Enter admin name"
-              />
-              <ErrorMessage name="adminName" component="div" className="error" />
-            </div>
+          {({ isSubmitting }) => (
+            <Form>
+              <div className="input-group">
+                <label htmlFor="email">Email</label>
+                <Field
+                  type="text"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Email"
+                />
+                <ErrorMessage name="email" component="div" className="error" />
+              </div>
 
-            <div className="input-group">
-              <label htmlFor="password">PASSWORD</label>
-              <Field
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter password"
-              />
-              <ErrorMessage name="password" component="div" className="error" />
-            </div>
+              <div className="input-group">
+                <label htmlFor="password">PASSWORD</label>
+                <Field
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter password"
+                />
+                <ErrorMessage name="password" component="div" className="error" />
+              </div>
 
-            <button type="submit" className="login-button" onClick={handlSubmit} >LOGIN</button>
-          </Form>
+              <button
+                type="submit"
+                className="login-button"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Logging in...' : 'LOGIN'}
+              </button>
+            </Form>
+          )}
         </Formik>
       </div>
     </div>

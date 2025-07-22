@@ -2,7 +2,11 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../../utils/axiosInstance";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -26,14 +30,13 @@ const Login = () => {
 
     onSubmit: async (values) => {
       try {
-        const response = await axiosInstance.post("/seller/login", values);
-
-        alert("Login Successful!");
+        const response= await DataService().post(API.SELLER_LOGIN, values);
+        toast.success("Login Successful!");
         localStorage.setItem("authToken", response.data.token);
         navigate("/seller/dashboard");
       } catch (error) {
-        console.error("Login error:", error);
-        alert(error.response?.data?.message || "Login failed");
+        toast.error("Login error:", error);
+        toast.error(error.response?.data?.message || "Login failed");
       }
     },
   });

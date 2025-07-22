@@ -21,7 +21,7 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log("Submitted Product:", formData);
     const token = localStorage.getItem("token"); // or "authToken" if that’s your key
@@ -32,15 +32,16 @@ const AddProduct = () => {
   data.append("category", formData.category);
   data.append("stock", formData.stock);
   data.append("price", formData.price);
-  data.append("image", formData.image);
-
+  // data.append("image", formData.image);
+  debugger
   try {
-    const res =  axios.post("/seller/product", data, {
+    const res = await axios.post("/seller/add-product", data, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       },
     });
+    debugger
 
     alert("✅ Product added successfully!");
     console.log("Server response:", res.data);
