@@ -6,10 +6,6 @@ import ProductManagement from "./ProductManagement";
 // src/pages/seller/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 
-// src/pages/seller/Dashboard.jsx
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-
 
 const Sidebar = () => {
   const navigate = useNavigate();

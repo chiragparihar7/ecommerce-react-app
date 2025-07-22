@@ -12,11 +12,10 @@ function Register() {
 
   const handleFormSubmit = async (values) => {
     try {
-      // Send form data to backend
-      const res = await axiosInstance.post("/seller/signup", values);
+      const res = await axiosInstance.post("/user/signup", values);
 
       alert("Registration Successful");
-      navigate("/seller/login"); // Redirect after successful registration
+      navigate("/user/login"); 
     } catch (error) {
       console.error("Registration Error:", error);
       alert(

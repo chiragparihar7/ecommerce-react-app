@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosInstance from "../../../../utils/axiosInstance";
-
 
 const RegisterFormSchema = Yup.object({
   name: Yup.string()
@@ -27,19 +28,23 @@ const RegisterFormSchema = Yup.object({
     .required("Confirm password is required."),
 });
 
-const handleFormSubmission = (values) => {
-  console.log("Successful form submission", values);
-  try {
-    const res =  axiosInstance.post("/user/signup", values);
-    alert("Registration Successful!");
-    console.log("Response:", res.data);
-  } catch (error) {
-    alert("Registration Failed!");
-    console.log(error.response?.data?.message || "Something went wrong");
-  }
-};
-
 const Register = () => {
+  const navigate = useNavigate(); // ✅ Correct placement
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleFormSubmission = async (values) => {
+    try {
+      const res = await axiosInstance.post("/user/signup", values);
+      alert("Registration Successful!");
+      console.log("Response:", res.data);
+      navigate("/login");
+    } catch (error) {
+      alert("Registration Failed!");
+      console.log(error.response?.data?.message || "Something went wrong");
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -62,6 +67,7 @@ const Register = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">Register Form</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Name */}
           <div>
             <label className="block mb-1 font-medium">Name</label>
             <input
@@ -79,6 +85,7 @@ const Register = () => {
             )}
           </div>
 
+          {/* Email */}
           <div>
             <label className="block mb-1 font-medium">Email</label>
             <input
@@ -96,6 +103,7 @@ const Register = () => {
             )}
           </div>
 
+          {/* Mobile */}
           <div>
             <label className="block mb-1 font-medium">Mobile No</label>
             <input
@@ -113,6 +121,7 @@ const Register = () => {
             )}
           </div>
 
+          {/* Address */}
           <div>
             <label className="block mb-1 font-medium">Address</label>
             <textarea
@@ -130,35 +139,51 @@ const Register = () => {
             )}
           </div>
 
-          <div>
+          {/* Password */}
+          <div className="relative">
             <label className="block mb-1 font-medium">Password</label>
             <input
               id="password"
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
               placeholder="Enter password"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-gray-300 rounded pr-10"
             />
+            <span
+              className="absolute top-9 right-3 text-gray-500 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
             {formik.touched.password && formik.errors.password && (
               <p className="text-red-500 text-sm">{formik.errors.password}</p>
             )}
           </div>
 
-          <div>
+          {/* Confirm Password */}
+          <div className="relative">
             <label className="block mb-1 font-medium">Confirm Password</label>
             <input
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
               placeholder="Re-enter password"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-gray-300 rounded pr-10"
             />
+            <span
+              className="absolute top-9 right-3 text-gray-500 cursor-pointer"
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
             {formik.touched.confirmPassword &&
               formik.errors.confirmPassword && (
                 <p className="text-red-500 text-sm">
