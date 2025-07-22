@@ -29,8 +29,7 @@ const Login = () => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await DataService().post(API.ADMIN_LOGIN, values);
-
+      const response = await DataService(token).post(API.ADMIN_LOGIN, values)
       if (response.data.token) {
         localStorage.setItem('adminToken', response.data.token);
         alert('Login successful!');

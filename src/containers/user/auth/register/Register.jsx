@@ -3,44 +3,25 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axiosInstance from "../../../../utils/axiosInstance";
+import DataService from "../../../../config/DataService";
+import { API } from "../../../../config/API";
+import { toast } from "react-toastify";
+import { UserRegisterValidationSchema} from '../../../../utils/formikValidations'
 
-const RegisterFormSchema = Yup.object({
-  name: Yup.string()
-    .max(30, "Must be 30 characters or less")
-    .required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  mobile: Yup.string()
-    .matches(/^\d{10}$/, "Mobile number must be 10 digits")
-    .required("Mobile number is required"),
-  address: Yup.string()
-    .max(100, "Must be 100 characters or less")
-    .required("Address is required"),
-  password: Yup.string()
-    .min(8, "Password should have min 8 characters.")
-    .matches(/[a-zA-Z]/, "Password must contain letters")
-    .matches(/\d/, "Password must contain numbers")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required."),
-});
 
 const Register = () => {
-  const navigate = useNavigate(); // ✅ Correct placement
+  const navigate = useNavigate(); 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmission = async (values) => {
     try {
-      const res = await axiosInstance.post("/user/signup", values);
-      alert("Registration Successful!");
+      const res = await DataService().post(API.USER_REGISTER ,values)
+      toast.success("Registration Successful!");
       console.log("Response:", res.data);
       navigate("/login");
     } catch (error) {
-      alert("Registration Failed!");
+       toast.error("Registration Failed!");
       console.log(error.response?.data?.message || "Something went wrong");
     }
   };
@@ -54,7 +35,7 @@ const Register = () => {
       password: "",
       confirmPassword: "",
     },
-    validationSchema: RegisterFormSchema,
+    validationSchema:  UserRegisterValidationSchema,
     onSubmit: handleFormSubmission,
   });
 
