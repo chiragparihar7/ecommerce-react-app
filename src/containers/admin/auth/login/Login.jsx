@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Login.css';
 import DataService from '../../../../config/DataService';
 import { API } from '../../../../config/API';
@@ -30,6 +29,9 @@ const Login = () => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
+      
+
+
       const response = await DataService().post(API.ADMIN_LOGIN, values);
 
       if (response.data.token) {
