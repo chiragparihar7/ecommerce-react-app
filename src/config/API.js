@@ -1,6 +1,6 @@
-const seller = '/api/seller'
+const seller = '/seller'
 const user = '/user'
-const admin = '/api/admin'
+const admin = '/admin'
 
 export const API = {
 
@@ -11,8 +11,8 @@ export const API = {
     SELLER_PRODUCTS: `${seller}/products`,  
 
     // User APIs
-
-
+ 
+    USER_SIGNUP: `${user}/signup`,
 
 
     // Admin APIs

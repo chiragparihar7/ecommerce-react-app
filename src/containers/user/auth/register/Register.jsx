@@ -4,6 +4,10 @@ import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axiosInstance from "../../../../utils/axiosInstance";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { API } from "../../../../config/API";
+import DataService from "../../../../config/DataService";
 
 const RegisterFormSchema = Yup.object({
   name: Yup.string()
@@ -29,18 +33,20 @@ const RegisterFormSchema = Yup.object({
 });
 
 const Register = () => {
-  const navigate = useNavigate(); // ✅ Correct placement
+  const navigate = useNavigate(); // 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmission = async (values) => {
     try {
-      const res = await axiosInstance.post("/user/signup", values);
-      alert("Registration Successful!");
+      // const res = await axiosInstance.post("/user/signup", values);
+      const res = await DataService().post(API.USER_SIGNUP, values);
+      toast.success("Registration Successful!");
+
       console.log("Response:", res.data);
       navigate("/login");
     } catch (error) {
-      alert("Registration Failed!");
+      toast.error("Registration Failed!");
       console.log(error.response?.data?.message || "Something went wrong");
     }
   };
