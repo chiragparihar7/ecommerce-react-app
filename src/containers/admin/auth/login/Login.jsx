@@ -2,11 +2,11 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Login.css';
 import DataService from '../../../../config/DataService';
 import { API } from '../../../../config/API';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,14 +32,14 @@ const Login = () => {
       const response = await DataService(token).post(API.ADMIN_LOGIN, values)
       if (response.data.token) {
         localStorage.setItem('adminToken', response.data.token);
-        alert('Login successful!');
+        toast.success('Login successful!');
         navigate('/admin/dashboard');
       } else {
-        alert('Login failed');
+        toast.error('Login failed');
       }
     } catch (error) {
 
-      alert(error.response?.data?.message || 'Login failed!');
+      toast.error(error.response?.data?.message || 'Login failed!');
     } finally {
       setSubmitting(false);
     }

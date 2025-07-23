@@ -1,4 +1,3 @@
-
 const seller = '/seller'
 const user = '/user'
 const admin = '/admin'
