@@ -7,25 +7,44 @@ import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setLoading,
+  registerSuccess,
+  loginSuccess,
+  authFailed,
+  sellerLogout,
+} from "../../../redux/slices/sellerSlice";
 
 function Register() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { seller, loading, error } = useSelector((state) => state.seller);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleFormSubmit = async (values) => {
+    dispatch(setLoading());
     try {
-      // Send form data to backend
       const response = await DataService().post(API.SELLER_SIGNUP, values);
-      toast.success("Registration Successful");
-      navigate("/seller/login"); // Redirect after successful registration
-    } catch (error) {
-      console.error("Registration Error:", error);
-      toast.error(
-        error.response?.data?.message ||
-          "Something went wrong during registration"
+
+      dispatch(
+        registerSuccess({
+          seller: response.data.seller,
+          token: response.data.token,
+        })
       );
+
+      localStorage.setItem("token", response.data.token);
+      toast.success("Registration Successful");
+      navigate("/seller/login");
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Something went wrong during registration";
+      dispatch(authFailed({ error: message }));
+      toast.error(message);
     }
   };
 
