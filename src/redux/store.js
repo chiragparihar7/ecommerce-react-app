@@ -1,29 +1,27 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import sellerReducer from "./slices/sellerSlice";
+import sellerProductReducer from "./slices/sellerProductSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
-import sellerReducer from "./slices/sellerSlice";
-import sellerProductReducer from "./slices/sellerProductSlice";
-import adminReducer from "./slices/adminSlice";
-
-
-const adminPersistConfig = {
-  key: "admin", 
+const PersistConfig = {   
+  key: "root",
   storage,
-  
 };
 
-const rootReducer = combineReducers({
+const rootReducers = combineReducers({
   seller: sellerReducer,
   sellerProduct: sellerProductReducer,
- admin: persistReducer(adminPersistConfig, adminReducer),
 });
 
+const persistedReducer = persistReducer(PersistConfig, rootReducers);
+
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // required for redux-persist
+      serializableCheck: false, // to ignore persist warnings
     }),
 });
 

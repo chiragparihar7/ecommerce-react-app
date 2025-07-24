@@ -7,7 +7,8 @@ export const API = {
   SELLER_LOGIN: `${seller}/login`,
   SELLER_SIGNUP: `${seller}/signup`,
   SELLER_ORDERS: `${seller}/orders`,
-  SELLER_PRODUCTS: `${seller}/products`,
+  SELLER_PRODUCTS: `${seller}/add-product`,
+  SELLER_CATEGORY_LIST: `${seller}/category-list`,
 
   // User APIs
   USER_REGISTER: `${user}/signup`,
@@ -15,4 +16,6 @@ export const API = {
 
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
+  ADMIN_CATEGORY_LIST: `${admin}/category`,
+  
 };
