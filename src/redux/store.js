@@ -1,11 +1,4 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// import sellerProductReducer from './slices/sellerProductSlice';
-// const store = configureStore({
-//   reducer: {
-//     seller : sellerReducer,
-//     sellerProduct: sellerProductReducer,
-//   },
-// });
+
 
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import sellerReducer from "./slices/sellerSlice";
@@ -13,9 +6,7 @@ import sellerProductReducer from "./slices/sellerProductSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 
-// export default store;
-
-const PersistConfig = {
+const PersistConfig = {   
   key: "root",
   storage,
 };
@@ -34,6 +25,5 @@ export const store = configureStore({
       serializableCheck: false, // to ignore persist warnings
     }),
 });
-
 
 export const persistor = persistStore(store);
