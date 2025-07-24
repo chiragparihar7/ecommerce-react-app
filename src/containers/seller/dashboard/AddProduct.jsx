@@ -1,6 +1,23 @@
 import React, { useState } from "react";
-import axios from "../../../utils/axiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+import {
+  setLoading,
+  addProductSuccess,
+  productError,
+} from "../../../redux/slices/sellerProductSlice";
+
 const AddProduct = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const sellerToken = useSelector((state) => state.seller.seller.token);
+
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -21,34 +38,30 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitted Product:", formData);
-    const token = localStorage.getItem("token"); // or "authToken" if that’s your key
 
-  const data = new FormData();
-  data.append("name", formData.name);
-  data.append("description", formData.description);
-  data.append("category", formData.category);
-  data.append("stock", formData.stock);
-  data.append("price", formData.price);
-  // data.append("image", formData.image);
-  debugger
-  try {
-    const res = await axios.post("/seller/add-product", data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    debugger
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("description", formData.description);
+    data.append("category", formData.category);
+    data.append("stock", formData.stock);
+    data.append("price", formData.price);
+    data.append("image", formData.image);
 
-    alert("✅ Product added successfully!");
-    console.log("Server response:", res.data);
-  } catch (err) {
-    console.error("❌ Error adding product:", err.response?.data?.message || err.message);
-    alert("❌ Failed to add product");
-  }
+    try {
+      dispatch(setLoading());
+
+      const res = await DataService(sellerToken).post(API.SELLER_ADD_PRODUCT, data);
+
+      dispatch(addProductSuccess(res.data.product)); // 
+      toast.success("✅ Product added successfully!");
+      navigate("/seller/dashboard/products");
+    } catch (err) {
+      const message = err.response?.data?.message || err.message;
+      dispatch(productError(message));
+      toast.error("❌ Failed to add product");
+    }
   };
 
   return (
@@ -94,7 +107,9 @@ const AddProduct = () => {
             >
               <option value="">Select Category</option>
               {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>{cat}</option>
+                <option key={idx} value={cat}>
+                  {cat}
+                </option>
               ))}
             </select>
           </div>

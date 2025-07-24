@@ -1,14 +1,16 @@
-// src/pages/seller/Dashboard.jsx
-
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-// import DataService from "../../../utils/axiosInstance";
-// import { API } from "../../../config/API";
+import { useSelector, useDispatch } from "react-redux";
+import { loginSuccess, sellerLogout } from "../../../redux/slices/sellerSlice";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { seller } = useSelector((state) => state.seller);
 
   const tabs = [
     { name: "Dashboard", path: "/seller/dashboard" },
@@ -45,12 +47,13 @@ const Sidebar = () => {
             className="w-10 h-10 rounded-full object-cover"
           />
           <div>
-            <p className="text-sm font-medium">Seller Name</p>
-            <p className="text-xs text-gray-500">seller@example.com</p>
+            <p className="text-sm font-medium">{seller?.name}</p>
+            <p className="text-xs text-gray-500">{seller?.email}</p>
           </div>
         </div>
         <button
           onClick={() => {
+            dispatch(sellerLogout());
             localStorage.removeItem("token");
             navigate("/seller/login");
           }}
@@ -64,33 +67,26 @@ const Sidebar = () => {
 };
 
 const Dashboard = () => {
-  const [orders, setOrders] = useState([]);
-
   useEffect(() => {
-    const fetchSellerOrders = async () => {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+
+    const fetchSellerProfile = async () => {
+      if (!token) return;
 
       try {
-
-        // const response = await DataService(token).get(API.SELLER_ORDERS);
-
-
-        const res = await axios.get("/seller/orders", {
+        const res = await DataService.get(API.SELLER_PROFILE, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        setOrders(res.data.orders);
+        dispatch(loginSuccess({ seller: res.data.seller, token })); // 
       } catch (err) {
-        console.error(
-          "Failed to fetch seller orders",
-          err.response?.data?.message
-        );
+        console.log("Auto-login failed", err);
       }
     };
 
-    fetchSellerOrders();
+    fetchSellerProfile();
   }, []);
 
   return (
