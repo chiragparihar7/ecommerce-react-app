@@ -6,8 +6,18 @@ import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setLoading,
+  registerSuccess,
+  loginSuccess,
+  authFailed,
+  sellerLogout,
+} from "../../../redux/slices/sellerSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const { seller, loading, error } = useSelector((state) => state.seller);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -29,14 +39,22 @@ const Login = () => {
     }),
 
     onSubmit: async (values) => {
+      dispatch(setLoading());
       try {
-        const response= await DataService().post(API.SELLER_LOGIN, values);
+        const response = await DataService().post(API.SELLER_LOGIN, values);
+        dispatch(
+          loginSuccess({
+            seller: response.data.seller,
+            token: response.data.token,
+          })
+        );
+
         toast.success("Login Successful!");
-        localStorage.setItem("authToken", response.data.token);
         navigate("/seller/dashboard");
       } catch (error) {
-        toast.error("Login error:", error);
-        toast.error(error.response?.data?.message || "Login failed");
+        const message = error.response?.data?.message || "Login failed";
+        dispatch(authFailed({ error: message }));
+        toast.error(message);
       }
     },
   });

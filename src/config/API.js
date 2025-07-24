@@ -1,22 +1,23 @@
-const seller = '/seller'
-const user = '/user'
-const admin = '/admin'
+const seller = "/seller";
+const user = "/user";
+const admin = "/admin";
 
 export const API = {
-
-    // Seller APIs
-    SELLER_LOGIN: `${seller}/login`,
-    SELLER_SIGNUP: `${seller}/signup`,
-    SELLER_ORDERS: `${seller}/orders`,
-    SELLER_PRODUCTS: `${seller}/products`,  
-
-    // User APIs
- 
-    USER_SIGNUP: `${user}/signup`,
+  // Seller APIs
+  SELLER_LOGIN: `${seller}/login`,
+  SELLER_SIGNUP: `${seller}/signup`,
+  SELLER_ORDERS: `${seller}/orders`,
+  SELLER_PROFILE: `${seller}/profile`,
+  SELLER_PRODUCTS: `${seller}/products`,
+  SELLER_ADD_PRODUCT: `${seller}/add-product`,
 
 
-    // Admin APIs
-    ADMIN_LOGIN: `${admin}/login`,
 
-}
 
+  
+  // User APIs
+  USER_SIGNUP: `${user}/signup`,
+
+  // Admin APIs
+  ADMIN_LOGIN: `${admin}/login`,
+};
