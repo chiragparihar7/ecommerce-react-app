@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
@@ -14,9 +14,7 @@ import {
 const AddProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const sellerToken = useSelector((state) => state.seller.seller.token);
-
 
   const [formData, setFormData] = useState({
     name: "",
@@ -27,7 +25,23 @@ const AddProduct = () => {
     image: null,
   });
 
-  const categories = ["T-Shirts", "Jeans", "Shoes", "Accessories"];
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await DataService(sellerToken).get(
+          API.SELLER_CATEGORY_LIST
+        );
+        setCategories(res.data.data);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+        toast.error("⚠️ Failed to load categories");
+      }
+    };
+
+    fetchCategories();
+  }, [sellerToken]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -41,10 +55,20 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const selectedCategory = categories.find(
+      (cat) => cat._id === formData.category
+    );
+
+    if (!selectedCategory) {
+      toast.error("⚠️ Invalid category selected");
+      return;
+    }
+
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
-    data.append("category", formData.category);
+    data.append("category._id", selectedCategory._id); // ✅ FIXED
+    data.append("category.name", selectedCategory.name); // ✅ FIXED
     data.append("stock", formData.stock);
     data.append("price", formData.price);
     data.append("image", formData.image);
@@ -52,9 +76,12 @@ const AddProduct = () => {
     try {
       dispatch(setLoading());
 
-      const res = await DataService(sellerToken).post(API.SELLER_ADD_PRODUCT, data);
+      const res = await DataService(sellerToken).post(
+        API.SELLER_PRODUCTS,
+        data
+      );
 
-      dispatch(addProductSuccess(res.data.product)); // 
+      dispatch(addProductSuccess(res.data.product));
       toast.success("✅ Product added successfully!");
       navigate("/seller/dashboard/products");
     } catch (err) {
@@ -68,10 +95,12 @@ const AddProduct = () => {
     <div className="p-6 m-10 bg-white rounded-xl shadow-md max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Add Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Row 1: Product Name + Description */}
+        {/* Row 1 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Product Name</label>
+            <label className="block text-sm font-medium mb-1">
+              Product Name
+            </label>
             <input
               type="text"
               name="name"
@@ -82,7 +111,9 @@ const AddProduct = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Description</label>
+            <label className="block text-sm font-medium mb-1">
+              Description
+            </label>
             <input
               type="text"
               name="description"
@@ -94,7 +125,7 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {/* Row 2: Category + Stock */}
+        {/* Row 2 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Category</label>
@@ -106,9 +137,9 @@ const AddProduct = () => {
               required
             >
               <option value="">Select Category</option>
-              {categories.map((cat, idx) => (
-                <option key={idx} value={cat}>
-                  {cat}
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.name}
                 </option>
               ))}
             </select>
@@ -126,7 +157,7 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {/* Row 3: Price + Image */}
+        {/* Row 3 */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">Price (₹)</label>
@@ -140,7 +171,9 @@ const AddProduct = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Upload Image</label>
+            <label className="block text-sm font-medium mb-1">
+              Upload Image
+            </label>
             <input
               type="file"
               name="image"

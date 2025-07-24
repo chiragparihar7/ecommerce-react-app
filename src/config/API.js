@@ -16,6 +16,9 @@ export const API = {
 
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
-  ADMIN_CATEGORY_LIST: `${admin}/category`,
-  
+  ADMIN_CATEGORY_LIST: `${admin}/category-list`,
+  ADMIN_CATEGORY_ADD: `${admin}/add-categories`,
+  ADMIN_CATEGORY_REMOVE: `${admin}/categories`
+
+
 };
