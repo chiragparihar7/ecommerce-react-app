@@ -7,31 +7,34 @@ import DataService from '../../../../config/DataService';
 import { API } from '../../../../config/API';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+ 
 const Login = () => {
   const navigate = useNavigate();
-
+ 
   const initialValues = {
     email: '',
     password: ''
   };
-
+ 
   const validationSchema = Yup.object({
     email: Yup.string().email()
       .required('Email is required'),
-
+ 
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters')
       .matches(/[0-9]/, 'Password must contain at least one number')
       .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Must contain at least one special character')
       .required('Password is required')
   });
-
+ 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
-      
 
+      const response = await DataService(token).post(API.ADMIN_LOGIN, values)
 
+     
+ 
+ 
       const response = await DataService().post(API.ADMIN_LOGIN, values);
 
       if (response.data.token) {
@@ -42,18 +45,18 @@ const Login = () => {
         toast.error('Login failed');
       }
     } catch (error) {
-
+ 
       toast.error(error.response?.data?.message || 'Login failed!');
     } finally {
       setSubmitting(false);
     }
   };
-
+ 
   return (
     <div className="login-container">
       <div className="login-form">
         <h2 className="login-title">ADMIN LOG-IN</h2>
-
+ 
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -71,7 +74,7 @@ const Login = () => {
                 />
                 <ErrorMessage name="email" component="div" className="error" />
               </div>
-
+ 
               <div className="input-group">
                 <label htmlFor="password">PASSWORD</label>
                 <Field
@@ -82,7 +85,7 @@ const Login = () => {
                 />
                 <ErrorMessage name="password" component="div" className="error" />
               </div>
-
+ 
               <button
                 type="submit"
                 className="login-button"
@@ -97,5 +100,5 @@ const Login = () => {
     </div>
   );
 };
-
+ 
 export default Login;

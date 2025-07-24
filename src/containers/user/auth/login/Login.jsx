@@ -1,30 +1,25 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axiosInstance from "../../../../utils/axiosInstance"; //
+import axiosInstance from "../../../../utils/axiosInstance"; 
 import { useNavigate } from "react-router-dom";
-
-const LoginFormSchema = Yup.object({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string().required("Password is required"),
-});
+import { UserLoginValidationSchema } from "../../../../utils/formikValidations";
+import DataService from "../../../../config/DataService";
+import { API } from "../../../../config/API";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
   const handleLogin = async (values) => {
     try {
-      const res = await axiosInstance.post("/user/login", values);
-      alert("Login Successful");
+      const res = await DataService().post(API.USER_LOGIN ,values);
+      toast.success("Login Successful");
       localStorage.setItem("token", res.data.token);
-       navigate("/"); 
+      navigate("/");
     } catch (error) {
-      alert("Login Failed");
+      toast.error("Login Failed");
       console.log(error.response?.data?.message || "An error occurred");
     }
-
-    
   };
 
   const formik = useFormik({
@@ -32,7 +27,7 @@ const Login = () => {
       email: "",
       password: "",
     },
-    validationSchema: LoginFormSchema,
+    validationSchema: UserLoginValidationSchema,
     onSubmit: handleLogin,
   });
 
