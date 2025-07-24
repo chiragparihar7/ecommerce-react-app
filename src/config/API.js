@@ -11,8 +11,9 @@ export const API = {
     SELLER_PRODUCTS: `${seller}/products`,  
 
     // User APIs
- 
-    USER_SIGNUP: `${user}/signup`,
+    USER_REGISTER: `${user}/signup`,
+    USER_LOGIN: `${user}/login`,
+
 
 
     // Admin APIs
