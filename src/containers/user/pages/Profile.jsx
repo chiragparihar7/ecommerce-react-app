@@ -1,21 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import DataService from '../../../config/DataService';
+import { API } from '../../../config/API';
 
 const Profile = () => {
+  const token = useSelector((state) => state.user?.user?.token);
   const [formData, setFormData] = useState({
-    name: 'Sunil',
-    email: 'sunil@gmail.com',
-    mobile: '9634287345',
-    address: 'test demp',
+    name: '',
+    email: '',
+    mobile: '',
+    address: ''
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const fetchProfile = async () => {
+    try {
+      const res = await DataService(token).get(API.USER_PROFILE);
+      console.log("Profile Response", res.data);
+      const { name, email, mobile, address } = res.data.user;
+      setFormData({ name, email, mobile, address });
+    } catch (error) {
+      console.error("Error fetching profile:", error.response?.data || error.message);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (token) {
+      fetchProfile();
+    }
+  }, [token]);
 
-    console.log('Updated Profile:', formData);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await DataService(token).put(API.USER_PROFILE, formData);
+      console.log('Profile updated successfully:', res.data);
+      alert("Profile updated!");
+    } catch (error) {
+      console.error("Error updating profile:", error.response?.data || error.message);
+      alert("Failed to update profile.");
+    }
   };
 
   return (
@@ -25,49 +56,20 @@ const Profile = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Mobile</label>
-              <input
-                type="text"
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400"
-              />
-            </div>
+            {["name", "email", "mobile", "address"].map((field) => (
+              <div key={field}>
+                <label className="block text-sm font-medium text-gray-700 capitalize">
+                  {field}
+                </label>
+                <input
+                  type={field === "email" ? "email" : "text"}
+                  name={field}
+                  value={formData[field]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400"
+                />
+              </div>
+            ))}
           </div>
 
           <div className="mt-6 text-center">

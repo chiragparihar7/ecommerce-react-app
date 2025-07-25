@@ -1,12 +1,10 @@
-
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: null,       // Holds user info like name, email
-  token: null,      // Auth token (JWT or similar)
-  loading: false,   // Indicates loading state during auth API calls
-  error: null,      // Stores error messages
+  user: null, // Holds user info like name, email
+  token: null, // Auth token (JWT or similar)
+  loading: false, // Indicates loading state during auth API calls
+  error: null, // Stores error messages
 };
 
 const userSlice = createSlice({
@@ -18,31 +16,25 @@ const userSlice = createSlice({
       state.error = null;
     },
 
-    
-    registerSuccess: (state, action) => {
-      state.loading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
+    setUserToken: (state, action) => {
+      state.token = action.payload;
     },
 
-  
     loginSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.token = action.payload.user.token;
     },
 
-    
     authFailed: (state, action) => {
       state.loading = false;
       state.error = action.payload.error;
     },
 
-
     userLogout: (state) => {
       state.user = null;
       state.token = null;
-    }
+    },
   },
 });
 
