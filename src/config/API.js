@@ -13,9 +13,12 @@ export const API = {
   // User APIs
   USER_REGISTER: `${user}/signup`,
   USER_LOGIN: `${user}/login`,
+  USER_PROFILE: `${user}/profile`,
 
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
   ADMIN_CATEGORY_LIST: `${admin}/category`,
   
 };
+export default API;
+
