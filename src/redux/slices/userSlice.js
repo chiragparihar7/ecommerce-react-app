@@ -19,17 +19,12 @@ const userSlice = createSlice({
     },
 
     
-    registerSuccess: (state, action) => {
-      state.loading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-    },
 
   
     loginSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
-      state.token = action.payload.token;
+      state.token = action.payload.user.token;
     },
 
     

@@ -1,20 +1,28 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axiosInstance from "../../../../utils/axiosInstance"; 
+import axiosInstance from "../../../../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { UserLoginValidationSchema } from "../../../../utils/formikValidations";
 import DataService from "../../../../config/DataService";
 import { API } from "../../../../config/API";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../../../redux/slices/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const handleLogin = async (values) => {
     try {
-      const res = await DataService().post(API.USER_LOGIN ,values);
+      const res = await DataService().post(API.USER_LOGIN, values);
+
+      console.log(res.data.user, ":Login res");
+      dispatch(loginSuccess(res.data.user))
       toast.success("Login Successful");
-      localStorage.setItem("token", res.data.token);
+      // localStorage.setItem("token", res.data.token);
+
       navigate("/");
     } catch (error) {
       toast.error("Login Failed");
