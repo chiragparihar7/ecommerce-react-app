@@ -20,7 +20,6 @@ const adminSlice = createSlice({
       state.loading = false;
       state.admin = action.payload.admin;
       state.token = action.payload.token;
-      localStorage.setItem("adminToken", action.payload.token); 
     },
     adminAuthFailed: (state, action) => {
       state.loading = false;
@@ -29,7 +28,6 @@ const adminSlice = createSlice({
     adminLogout: (state) => {
       state.admin = null;
       state.token = null;
-      localStorage.removeItem("adminToken");
     },
   },
 });

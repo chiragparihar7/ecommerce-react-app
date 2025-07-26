@@ -1,40 +1,43 @@
-// src/containers/seller/dashboard/OrderManagement.jsx
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState([
-    {
-      id: "ORD001",
-      customer: "Alice",
-      total: 1500,
-      status: "Pending",
-    },
-    {
-      id: "ORD002",
-      customer: "Bob",
-      total: 999,
-      status: "Shipped",
-    },
-    {
-      id: "ORD003",
-      customer: "Charlie",
-      total: 1200,
-      status: "Delivered",
-    },
-  ]);
+  const sellerToken = useSelector((state) => state.seller.seller.token);
+  const [orders, setOrders] = useState([]);
+
+  // Fetch orders on load
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await DataService(sellerToken).get(API.SELLER_ALL_ORDERS);
+        setOrders(res.data.orders || []);
+      } catch (error) {
+        console.error("Error fetching orders", error);
+        toast.error("Failed to load orders");
+      }
+    };
+
+    if (sellerToken) fetchOrders();
+  }, [sellerToken]);
 
   const handleStatusChange = (id, newStatus) => {
-    setOrders(
-      orders.map((order) =>
-        order.id === id ? { ...order, status: newStatus } : order
+    setOrders((prev) =>
+      prev.map((order) =>
+        order._id === id ? { ...order, status: newStatus } : order
       )
     );
+
+    // (Optional) Send API to backend for updating status
+    // You can use API.SELLER_UPDATE_ORDER_STATUS
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure to delete this order?")) {
-      setOrders(orders.filter((order) => order.id !== id));
+      setOrders((prev) => prev.filter((order) => order._id !== id));
+      // (Optional) Call delete API if implemented
     }
   };
 
@@ -53,16 +56,16 @@ const OrderManagement = () => {
         </thead>
         <tbody className="text-sm">
           {orders.map((order) => (
-            <tr key={order.id} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-2">{order.id}</td>
-              <td className="px-4 py-2">{order.customer}</td>
-              <td className="px-4 py-2">₹{order.total}</td>
+            <tr key={order._id} className="border-b hover:bg-gray-50">
+              <td className="px-4 py-2">{order._id}</td>
+              <td className="px-4 py-2">{order.customerName || "N/A"}</td>
+              <td className="px-4 py-2">₹{order.totalAmount || 0}</td>
               <td className="px-4 py-2">{order.status}</td>
               <td className="px-4 py-2 space-x-2">
                 <select
                   value={order.status}
                   onChange={(e) =>
-                    handleStatusChange(order.id, e.target.value)
+                    handleStatusChange(order._id, e.target.value)
                   }
                   className="border rounded px-2 py-1 text-sm"
                 >
@@ -72,7 +75,7 @@ const OrderManagement = () => {
                   <option value="Cancelled">Cancelled</option>
                 </select>
                 <button
-                  onClick={() => handleDelete(order.id)}
+                  onClick={() => handleDelete(order._id)}
                   className="text-red-600 hover:underline ml-2"
                 >
                   Delete

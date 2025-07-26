@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../../../components/Header";
 import DataService from "../../../../config/DataService";
 import { toast } from "react-toastify";
 import { API } from "../../../../config/API";
+import {useSelector} from 'react-redux';
+
+
 const Categorys = () => {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("authToken");
+  const adminToken = useSelector((state) =>  state.admin.token);
+
 
   const fetchCategories = async () => {
     try {
-      const res = await DataService(token).get("/admin/category");
-      setCategories(res.data.categories);
+      const response = await DataService(adminToken).get(API.ADMIN_CATEGORY_LIST);
+      console.log(response , ":response")
+      setCategories(response.data.data);
     } catch (error) {
-      toast.error("Failed to load categories");
+      console.log("Failed to load categories");
     }
   };
 
@@ -29,9 +33,9 @@ const Categorys = () => {
 
     try {
       setLoading(true);
-      const res = await DataService(token).post("/admin/category", {
+      const res = await DataService(adminToken).post(API.ADMIN_CATEGORY_ADD, {
         name,
-        description,
+        subcategories:description,
       });
       setCategories([...categories, res.data.category]);
       setName("");
@@ -49,7 +53,7 @@ const Categorys = () => {
       return;
 
     try {
-      await DataService(token).delete(`/admin/category/${id}`);
+      await DataService(adminToken).delete(`${API.ADMIN_CATEGORY_REMOVE}/${id}`);
       setCategories(categories.filter((cat) => cat._id !== id));
       toast.success("🗑️ Deleted successfully");
     } catch (err) {
@@ -63,7 +67,6 @@ const Categorys = () => {
 
   return (
     <>
-      <Header />
       <div className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">📦 Category Management</h1>
 
@@ -109,7 +112,7 @@ const Categorys = () => {
                   Category
                 </th>
                 <th className="px-4 py-3 text-sm font-semibold text-gray-700">
-                  Description
+                  Sub Category
                 </th>
                 <th className="px-4 py-3 text-sm font-semibold text-gray-700">
                   Actions
@@ -117,12 +120,12 @@ const Categorys = () => {
               </tr>
             </thead>
             <tbody>
-              {categories.length > 0 ? (
+              {categories?.length > 0 ? (
                 categories.map((cat, index) => (
                   <tr key={cat._id} className="border-t border-gray-200">
                     <td className="px-4 py-3">{index + 1}</td>
                     <td className="px-4 py-3">{cat.name}</td>
-                    <td className="px-4 py-3">{cat.description}</td>
+                    <td className="px-4 py-3">{cat.subcategories?.toString()}</td>
                     <td className="px-4 py-3">
                       <button
                         onClick={() => handleRemove(cat._id)}
