@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Header from "../../../../components/Header";
 import DataService from "../../../../config/DataService";
 import { toast } from "react-toastify";
 import { API } from "../../../../config/API";
@@ -68,7 +67,6 @@ const Categorys = () => {
 
   return (
     <>
-      <Header />
       <div className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">📦 Category Management</h1>
 
