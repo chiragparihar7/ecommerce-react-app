@@ -18,6 +18,7 @@ export const API = {
   // User APIs
   USER_REGISTER: `${user}/signup`,
   USER_LOGIN: `${user}/login`,
+  USER_PROFILE: `${user}/profile`,
 
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
@@ -25,3 +26,5 @@ export const API = {
   ADMIN_CATEGORY_ADD: `${admin}/add-categories`,
   ADMIN_CATEGORY_REMOVE: `${admin}/categories`,
 };
+export default API;
+
