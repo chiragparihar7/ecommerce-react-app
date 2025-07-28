@@ -1,8 +1,7 @@
-// redux/slices/adminSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  admin: null,
+  admin: null,         // will contain { name, email }
   token: null,
   loading: false,
   error: null,
@@ -18,19 +17,17 @@ const adminSlice = createSlice({
     },
     adminLoginSuccess: (state, action) => {
       state.loading = false;
-      state.admin = action.payload.admin;
+      state.admin = action.payload.admin; // { name, email }
       state.token = action.payload.token;
-      localStorage.setItem("adminToken", action.payload.token); 
     },
     adminAuthFailed: (state, action) => {
       state.loading = false;
       state.error = action.payload.error;
     },
     adminLogout: (state) => {
-      state.admin = null;
       state.token = null;
-      localStorage.removeItem("adminToken");
-    },
+      state.admin = null;
+    },  
   },
 });
 
@@ -38,7 +35,7 @@ export const {
   setAdminLoading,
   adminLoginSuccess,
   adminAuthFailed,
-  adminLogout,
+  adminLogout, // ✅ Fixed here
 } = adminSlice.actions;
 
 export default adminSlice.reducer;
