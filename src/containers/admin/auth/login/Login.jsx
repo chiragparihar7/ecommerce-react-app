@@ -1,6 +1,6 @@
 // src/pages/admin/Login.jsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { API } from '../../../../config/API';
 import { adminLoginSuccess, adminAuthFailed } from '../../../../redux/slices/adminSlice';
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -35,9 +36,9 @@ const Login = () => {
       const response = await DataService().post(API.ADMIN_LOGIN, values);
 
       if (response.data.token) {
-        dispatch(adminLoginSuccess({ 
-          token: response.data.token, 
-          admin: response.data.admin 
+        dispatch(adminLoginSuccess({
+          token: response.data.token,
+          admin: response.data.admin
         }));
         toast.success('Login successful!');
         navigate('/admin/dashboard');
@@ -63,13 +64,34 @@ const Login = () => {
             <Form>
               <div className="input-group">
                 <label htmlFor="email">Email</label>
-                <Field type="text" id="email" name="email" placeholder="Enter Email" />
+                <Field
+                  type="text"
+                  id="email"
+                  name="email"
+                  placeholder="Enter Email"
+                  className="form-input"
+                />
                 <ErrorMessage name="email" component="div" className="error" />
               </div>
 
               <div className="input-group">
                 <label htmlFor="password">Password</label>
-                <Field type="password" id="password" name="password" placeholder="Enter Password" />
+                <div className="password-field">
+                  <Field
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    name="password"
+                    placeholder="Enter Password"
+                    className="form-input password-input"
+                  />
+                  <span
+                    className="toggle-password-icon"
+                    onClick={() => setShowPassword(prev => !prev)}
+                    title={showPassword ? 'Hide Password' : 'Show Password'}
+                  >
+                    {showPassword ? '🙈' : '👁️'}
+                  </span>
+                </div>
                 <ErrorMessage name="password" component="div" className="error" />
               </div>
 
