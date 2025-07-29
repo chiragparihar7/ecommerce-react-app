@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const userToken = useSelector((state) => state.user.token);
-  console.log(userToken, ":::userToken")
+  // console.log(userToken, ":::userToken")
   const fetchProducts = async () => {
     try {
       const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);

@@ -2,7 +2,9 @@ const seller = "/seller";
 const user = "/user";
 const admin = "/admin";
 
+const BASE = "http://localhost:5000";
 export const API = {
+  BASE_URL: BASE,
   // Seller APIs
   SELLER_LOGIN: `${seller}/login`,
   SELLER_SIGNUP: `${seller}/signup`,
@@ -14,16 +16,19 @@ export const API = {
   SELLER_ALL_ORDERS: `${seller}/allOrders`, // ✅ Fetch seller orders
   SELLER_UPDATE_ORDER_STATUS: (orderId, itemId) =>
     `${seller}/orders/${orderId}/items/${itemId}`,
+  SELLER_IMAGE_UPLOAD: `${seller}/image-upload`,
 
   // User APIs
   USER_REGISTER: `${user}/signup`,
   USER_LOGIN: `${user}/login`,
   USER_PROFILE: `${user}/profile`,
-  USER_GET_ALL_PRODUCTS: `${user}/products`,
+  USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
-  USER_PRODUCT_DETAILS: `${user}/products/details`, // + /:id
+  USER_PRODUCT_DETAILS: `${user}/products/details`,
   USER_GET_CATEGORIES: `${user}/products/categories`,
+  USER_PROFILE_UPDATE: `${user}/profile/update`,
 
+  
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
   ADMIN_CATEGORY_LIST: `${admin}/category-list`,

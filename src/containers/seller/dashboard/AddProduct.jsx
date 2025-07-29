@@ -13,7 +13,7 @@ import {
 const AddProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { id } = useParams(); // edit mode if id exists
+  const { id } = useParams();
   const isEditMode = Boolean(id);
   const sellerToken = useSelector((state) => state.seller.seller.token);
 
@@ -23,7 +23,8 @@ const AddProduct = () => {
     category: "",
     stock: "",
     price: "",
-    image: null,
+    selectedImageFile: null,
+    imagePreview: "",
   });
 
   const [categories, setCategories] = useState([]);
@@ -31,16 +32,11 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch categories
         const categoryRes = await DataService(sellerToken).get(API.SELLER_CATEGORY_LIST);
         setCategories(categoryRes.data.data);
 
-        // Fetch product details if in edit mode
         if (isEditMode) {
-          const productRes = await DataService(sellerToken).get(
-            `${API.SELLER_PRODUCTS_DETAILS}/${id}`
-          );
-
+          const productRes = await DataService(sellerToken).get(`${API.SELLER_PRODUCTS_DETAILS}/${id}`);
           const product = productRes.data.product || productRes.data.data?.product;
 
           if (!product) {
@@ -48,14 +44,19 @@ const AddProduct = () => {
             return;
           }
 
-          setFormData({
+          setFormData((prev) => ({
+            ...prev,
             name: product.name || "",
             description: product.description || "",
             category: product.category?._id || "",
             stock: product.stock?.toString() || "",
             price: product.price?.toString() || "",
-            image: null,
-          });
+            imagePreview: product.image
+              ? product.image.startsWith("http")
+                ? product.image
+                : `${API.BASE_URL}/${product.image}`
+              : "",
+          }));
         }
       } catch (err) {
         console.error("❌ Error loading form data:", err);
@@ -67,53 +68,94 @@ const AddProduct = () => {
   }, [id, sellerToken, isEditMode]);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "image") {
-      setFormData({ ...formData, image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      selectedImageFile: file,
+      imagePreview: URL.createObjectURL(file),
+    }));
+  };
+
+
+
+  const uploadImage = async (productId, file) => {
+    const form = new FormData();
+    form.append("images", file[0]);
+    form.append("id", productId);
+
+    try {
+      const res = await DataService(sellerToken).post(API.SELLER_IMAGE_UPLOAD, form);
+
+      if (res.data?.success) {
+        toast.success("✅ Image uploaded successfully!");
+        return res.data.image; // if your backend returns image URL
+      } else {
+        toast.error("❌ Image upload failed!");
+      }
+    } catch (err) {
+      console.error("❌ Upload error:", err);
+      toast.error("❌ Error uploading image");
+    }
+
+    return null;
+  };
+
+  console.log(formData, ":formData")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const selectedCategory = categories.find(
-      (cat) => cat._id === formData.category
-    );
+    const selectedCategory = categories.find((cat) => cat._id === formData.category);
     if (!selectedCategory) {
       toast.error("⚠️ Please select a valid category");
       return;
     }
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("description", formData.description);
-    data.append("categoryId", selectedCategory._id);
-    data.append("price", formData.price);
-    data.append("stock", formData.stock);
-    if (formData.image) {
-      data.append("image", formData.image);
+    // const productData = {
+    //   name: formData.name,
+    //   description: formData.description,
+    //   categoryId: selectedCategory._id,
+    //   stock: formData.stock,
+    //   price: formData.price,
+    // };
+
+    console.log(formData.selectedImageFile, ":::::Test")
+
+    const productData = new FormData();
+    if(isEditMode){
+          productData.append('id', id)
     }
+    productData.append('name', formData.name)
+    productData.append('description', formData.description)
+    productData.append('categoryId', selectedCategory._id)
+    productData.append('stock', formData.stock)
+    productData.append('price', formData.price)
+    productData.append('images', formData.selectedImageFile)
 
     try {
       dispatch(setLoading());
 
-      const endpoint = isEditMode
-        ? `${API.SELLER_PRODUCTS}/${id}` // update
-        : API.SELLER_ADD_PRODUCTS;       // create
+      const res = await DataService(sellerToken).post(API.SELLER_ADD_PRODUCTS, productData, {
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      });
+      const product = res.data.product;
 
-      const method = "post"; // both creation & update use POST
-
-      const res = await DataService(sellerToken)[method](endpoint, data);
-
-      dispatch(addProductSuccess(res.data.product));
-      toast.success(`✅ Product ${isEditMode ? "updated" : "added"} successfully!`);
+      dispatch(addProductSuccess(product));
+      toast.success("✅ Product added successfully!");
       navigate("/seller/dashboard/products");
     } catch (err) {
       const message = err.response?.data?.message || err.message;
-      dispatch(productError(message));
-      toast.error(`❌ Failed to ${isEditMode ? "update" : "add"} product`);
+      dispatch(productError(message));  
+      toast.error("❌ Failed to add product");
     }
   };
 
@@ -195,12 +237,20 @@ const AddProduct = () => {
             <label className="block text-sm font-medium mb-1">Upload Image</label>
             <input
               type="file"
-              name="image"
               accept="image/*"
-              onChange={handleChange}
+              onChange={handleImageChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required={!isEditMode}
             />
+            {formData.imagePreview && (
+              <div className="mt-2">
+                <img
+                  src={formData.imagePreview}
+                  alt="Preview"
+                  className="h-32 w-32 object-cover border rounded"
+                />
+              </div>
+            )}
           </div>
         </div>
 
