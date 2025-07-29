@@ -23,6 +23,7 @@ export const API = {
   USER_PRODUCT_SEARCH: `${user}/products/search`,
   USER_PRODUCT_DETAILS: `${user}/products/details`, // + /:id
   USER_GET_CATEGORIES: `${user}/products/categories`,
+  USER_CHANGE_PASSWORD: `${user}/profile/password`,
 
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,

@@ -75,8 +75,8 @@ const Header = () => {
               <Link to="/wishlist" onClick={handleCloseDropdown} className="block px-4 py-2 hover:bg-gray-100">
                 Wishlist
               </Link>
-              <Link to="/rewards" onClick={handleCloseDropdown} className="block px-4 py-2 hover:bg-gray-100">
-                Rewards
+              <Link to="/Change-password" onClick={handleCloseDropdown} className="block px-4 py-2 hover:bg-gray-100">
+                Change-password
               </Link>
               <Link to="/giftcards" onClick={handleCloseDropdown} className="block px-4 py-2 hover:bg-gray-100">
                 Gift Cards
