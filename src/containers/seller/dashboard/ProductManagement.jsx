@@ -4,10 +4,10 @@ import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import LogoImage from '../../../assets/Logo.jpg'
 
 const ProductManagement = () => {
   const navigate = useNavigate();
-
   const [products, setProducts] = useState([]);
   const sellerToken = useSelector((state) => state.seller.seller.token);
 
@@ -15,20 +15,22 @@ const ProductManagement = () => {
     const fetchProducts = async () => {
       try {
         const res = await DataService(sellerToken).get(API.SELLER_PRODUCTS);
-        console.log("Fetched products:", res.data.products); // For Debugging
-        setProducts(res.data.products);
+        console.log("Fetched products:", res.data.products);
+        setProducts(res.data.products || []);
       } catch (error) {
         console.log("Failed to load products", error);
+        toast.error("❌ Failed to load products");
       }
     };
-    fetchProducts();
+
+    if (sellerToken) fetchProducts();
   }, [sellerToken]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure to delete this product?")) {
       try {
         await DataService(sellerToken).delete(`${API.SELLER_PRODUCTS}/${id}`);
-        setProducts(products.filter((p) => p.productId !== id)); // Use productId if API returns that
+        setProducts((prev) => prev.filter((p) => p.productId !== id));
         toast.success("✅ Product deleted successfully");
       } catch (error) {
         console.error("❌ Failed to delete product", error);
@@ -53,6 +55,7 @@ const ProductManagement = () => {
         <thead className="bg-gray-100 text-gray-700 text-sm">
           <tr>
             <th className="px-4 py-2 text-left">#</th>
+            <th className="px-4 py-2 text-left">Image</th>
             <th className="px-4 py-2 text-left">Name</th>
             <th className="px-4 py-2 text-left">Price</th>
             <th className="px-4 py-2 text-left">Stock</th>
@@ -64,6 +67,16 @@ const ProductManagement = () => {
           {products.map((product, i) => (
             <tr key={product.productId} className="border-b hover:bg-gray-50">
               <td className="px-4 py-2">{i + 1}</td>
+              <td className="px-4 py-2">
+                <img
+                  src={
+                       product.images?.length > 0
+                      ? `${API.BASE_URL}${product.images[0]}` : LogoImage
+                  }
+                  alt={product.name}
+                  className="w-16 h-16 object-cover rounded border"
+                />
+              </td>
               <td className="px-4 py-2">{product.name}</td>
               <td className="px-4 py-2">₹{product.price}</td>
               <td className="px-4 py-2">{product.stock}</td>
@@ -73,15 +86,12 @@ const ProductManagement = () => {
               <td className="px-4 py-2 space-x-2">
                 <button
                   onClick={() =>
-                    navigate(
-                      `/seller/dashboard/edit-product/${product.productId}`
-                    )
+                    navigate(`/seller/dashboard/edit-product/${product.productId}`)
                   }
                   className="text-blue-600 hover:underline"
                 >
                   Edit
                 </button>
-
                 <button
                   onClick={() => handleDelete(product.productId)}
                   className="text-red-600 hover:underline"
