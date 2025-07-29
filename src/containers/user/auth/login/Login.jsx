@@ -64,7 +64,7 @@ const Login = () => {
         )}
       </div>
 
-      {/* Password Field with Eye Icon & Validation Icon */}
+      {/* Password Field with Eye Icon */}
       <div className="mb-4 relative">
         <label className="block mb-1">Password</label>
         <div className="relative">
@@ -81,22 +81,11 @@ const Login = () => {
 
           {/* Toggle password visibility */}
           <span
-            className="absolute right-10 top-2.5 cursor-pointer"
+            className="absolute right-2 top-2.5 cursor-pointer"
             onClick={() => setShowPassword(!showPassword)}
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </span>
-
-          {/* Valid/Invalid icon */}
-          {formik.touched.password && (
-            <span className="absolute right-2 top-2.5">
-              {formik.errors.password ? (
-                <MdCancel className="text-red-500" />
-              ) : (
-                <MdCheckCircle className="text-green-500" />
-              )}
-            </span>
-          )}
         </div>
         {formik.touched.password && formik.errors.password && (
           <p className="text-red-500 text-sm">{formik.errors.password}</p>
