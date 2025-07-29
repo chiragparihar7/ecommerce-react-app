@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "./Login.css";
+import { useState } from "react";
 
 import DataService from "../../../../config/DataService";
 import { API } from "../../../../config/API";
@@ -17,6 +18,7 @@ import {
 } from "../../../../redux/slices/adminSlice";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
