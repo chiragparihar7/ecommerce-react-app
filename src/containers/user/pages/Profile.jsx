@@ -64,6 +64,41 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Submit updated data (excluding email)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { name, mobile, address } = formData; 
+      const res = await DataService(token).post(API.USER_PROFILE_UPDATE, {
+        name,
+        mobile,
+        address,
+      });
+
+      console.log("Profile updated successfully:", res.data);
+      toast.success("Profile updated!");
+      fetchProfile(); // refresh profile after update
+    } catch (error) {
+      console.error(
+        "Error updating profile:",
+        error.response?.data || error.message
+      );
+      toast.error(error.response?.data?.message || "Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded p-6">
