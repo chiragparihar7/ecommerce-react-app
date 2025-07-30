@@ -1,30 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { toast } from "react-toastify";
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  mobile: Yup.string()
+    .matches(/^[0-9]{10}$/, "Mobile number must be 10 digits")
+    .required("Mobile number is required"),
+  address: Yup.string().required("Address is required"),
+});
+
 const Profile = () => {
   const token = useSelector((state) => state.user?.user?.token);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    address: "",
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      address: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setLoading(true);
+      try {
+        const { name, mobile, address } = values;
+        const res = await DataService(token).post(API.USER_PROFILE_UPDATE, {
+          name,
+          mobile,
+          address,
+        });
+        toast.success("Profile updated!");
+        fetchProfile(); // Refresh the latest values
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Failed to update profile.");
+        console.error(error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
   });
 
-  // Fetch user profile data on mount
+  // Fetch profile data and set Formik values
   const fetchProfile = async () => {
     try {
       const res = await DataService(token).get(API.USER_PROFILE);
-      console.log("Profile Response", res.data);
       const { name, email, mobile, address } = res.data.user;
-      setFormData({ name, email, mobile, address });
+      formik.setValues({ name, email, mobile, address });
     } catch (error) {
-      console.error(
-        "Error fetching profile:",
-        error.response?.data || error.message
-      );
+      console.error("Error fetching profile:", error.response?.data || error.message);
     }
   };
 
@@ -32,6 +61,7 @@ const Profile = () => {
     if (token) {
       fetchProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // Handle input changes
@@ -76,7 +106,7 @@ const Profile = () => {
           User Profile
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {["name", "email", "mobile", "address"].map((field) => (
               <div key={field}>
@@ -86,13 +116,17 @@ const Profile = () => {
                 <input
                   type={field === "email" ? "email" : "text"}
                   name={field}
-                  value={formData[field]}
-                  onChange={handleChange}
-                  disabled={field === "email"} // make email read-only
+                  value={formik.values[field]}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  disabled={field === "email"}
                   className={`mt-1 block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:border-blue-400 ${
                     field === "email" ? "bg-gray-100 cursor-not-allowed" : ""
                   }`}
                 />
+                {formik.touched[field] && formik.errors[field] && field !== "email" && (
+                  <p className="text-red-500 text-sm mt-1">{formik.errors[field]}</p>
+                )}
               </div>
             ))}
           </div>

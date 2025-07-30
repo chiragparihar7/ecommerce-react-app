@@ -18,6 +18,7 @@ import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
 import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
+import UserLayout from "./containers/user/layout/UserLayout.jsx";
 
 const Router = () => {
   return (
@@ -26,14 +27,18 @@ const Router = () => {
         {/* User Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="productlist" element={<ProductList />} />
-        <Route path="/Change-password" element={<ChangePassword />} />
+
+        <Route path="/" element={<UserLayout />}>
+          <Route path="" element={<Home />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="Change-password" element={<ChangePassword />} />
+        </Route>
 
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
+
         <Route path="/seller/dashboard" element={<SellerDashboard />}>
           <Route index element={<DashboardHome />} />
           <Route path="products" element={<ProductManagement />} />

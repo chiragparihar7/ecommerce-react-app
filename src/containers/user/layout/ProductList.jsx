@@ -1,12 +1,12 @@
-// src/components/ProductList.jsx
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
+
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const userToken = useSelector((state) => state.user.token);
-  // console.log(userToken, ":::userToken")
+
   const fetchProducts = async () => {
     try {
       const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);
@@ -14,7 +14,7 @@ const ProductList = () => {
       console.log(res, ":::res");
       setProducts(res.data.products || []);
     } catch (error) {
-      console.error("Failed to fetch products", error);
+      console.error("❌ Failed to fetch products", error);
     }
   };
 
