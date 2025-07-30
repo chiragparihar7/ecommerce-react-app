@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useSelector, } from "react-redux";
+
+const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const token = useSelector((state) => state.user.token);
+
+  const headers = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const fetchCart = async () => {
+    try {
+      const res = await axios.get("/api/cart/view", headers);
+      console.log("Cart Items Response:", res.data);
+      if (res.data.success) {
+        const items = res.data.data.items;
+        setCartItems(items);
+        setTotal(res.data.data.meta.totalAmount);
+      }
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateQuantity = async (itemId, newQuantity) => {
+    try {
+      if (newQuantity < 1) return;
+      await axios.put(`/api/cart/${itemId}`, { quantity: newQuantity }, headers);
+      fetchCart();
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+    }
+  };
+
+  const removeItem = async (itemId) => {
+    try {
+      await axios.delete(`/api/cart/${itemId}`, headers);
+      fetchCart();
+    } catch (err) {
+      console.error("Failed to remove item:", err);
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await axios.delete("/api/cart", headers);
+      fetchCart();
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <section className="max-w-4xl mx-auto p-6">
+      <h2 className="text-2xl font-bold mb-4">🛒 Your Cart</h2>
+      {cartItems.length === 0 ? (
+        <p className="text-gray-500">Your cart is empty.</p>
+      ) : (
+        <>
+          <div className="space-y-4">
+            {cartItems.map(({ ItemId, product, requestedQuantity }) => (
+              <div key={ItemId} className="flex items-center justify-between border-b pb-3">
+                <div className="flex items-center gap-4">
+                  <img
+                    src={product.images[0]} // assuming images is an array
+                    alt={product.name}
+                    className="w-20 h-20 object-contain border rounded-md"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{product.name}</h3>
+                    <p className="text-blue-600">₹{product.price}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded"
+                        onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
+                      >
+                        -
+                      </button>
+                      <span>{requestedQuantity}</span>
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded"
+                        onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeItem(ItemId)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-6 text-right">
+            <p className="text-lg font-bold mb-2">Total: ₹{total}</p>
+            <button
+              className="bg-red-600 text-white px-4 py-2 rounded mr-2"
+              onClick={handleClearCart}
+            >
+              Clear Cart
+            </button>
+            <button className="bg-green-600 text-white px-4 py-2 rounded">Checkout</button>
+          </div>
+        </>
+      )}
+    </section>
+  );
+};
+
+export default Cart;
