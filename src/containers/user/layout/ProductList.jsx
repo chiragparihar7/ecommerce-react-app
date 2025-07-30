@@ -10,6 +10,7 @@ const ProductList = () => {
   const fetchProducts = async () => {
     try {
       const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);
+      console.log(res.data.products, ":::USER PRODUCTS");
       console.log(res, ":::res");
       setProducts(res.data.products || []);
     } catch (error) {
@@ -34,7 +35,11 @@ const ProductList = () => {
               className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition"
             >
               <img
-                src={product.image || "https://via.placeholder.com/300"}
+                src={
+                  product.images?.length > 0
+                    ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
+                    : "https://via.placeholder.com/300"
+                }
                 alt={product.name}
                 className="w-full h-48 object-cover rounded-md mb-3"
               />

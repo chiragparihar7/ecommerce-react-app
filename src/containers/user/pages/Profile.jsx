@@ -48,7 +48,7 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { name, mobile, address } = formData; // exclude email
+      const { name, mobile, address } = formData; 
       const res = await DataService(token).post(API.USER_PROFILE_UPDATE, {
         name,
         mobile,
