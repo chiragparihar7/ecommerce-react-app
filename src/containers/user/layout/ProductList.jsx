@@ -23,25 +23,28 @@ const ProductList = () => {
     fetchProducts();
   }, [userToken]);
 
-  const handleAddToCart = (productId) => {
+  const handleAddToCart = (e, productId) => {
+    e.stopPropagation();
     setCartQuantities((prev) => ({
       ...prev,
-      [productId]: 1,
+      [productId]: 1, 
     }));
   };
 
-  const increment = (productId) => {
+  const increment = (e, productId) => {
+    e.stopPropagation();
     setCartQuantities((prev) => ({
       ...prev,
       [productId]: (prev[productId] || 0) + 1,
     }));
   };
 
-  const decrement = (productId) => {
+  const decrement = (e, productId) => {
+    e.stopPropagation();
     setCartQuantities((prev) => {
       const newQty = (prev[productId] || 1) - 1;
       if (newQty <= 0) {
-        const { [productId]: _, ...rest } = prev; // remove item from cartQuantities
+        const { [productId]: _, ...rest } = prev;
         return rest;
       }
       return { ...prev, [productId]: newQty };
@@ -57,27 +60,28 @@ const ProductList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => {
-<<<<<<< HEAD
             const quantity = cartQuantities[product._id] || 0;
+            const imageUrl =
+              product.images?.length > 0
+                ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
+                : "https://via.placeholder.com/300x200";
 
             return (
               <div
                 key={product._id}
-                className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition"
+                className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition cursor-pointer"
               >
-                <img
-                  src={
-                    product.images?.length > 0
-                      ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
-                      : "https://via.placeholder.com/300"
-                  }
-                  alt={product.name}
-                  className="w-full h-48 object-cover rounded-md mb-3"
-                />
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-gray-600 text-sm truncate">
-                  {product.description}
-                </p>
+                {/* Clickable area (image + name) */}
+                <Link to={`/products/${product._id}`}>
+                  <img
+                    src={imageUrl}
+                    alt={product.name}
+                    className="w-full h-48 object-cover rounded-md mb-3"
+                  />
+                  <h3 className="text-lg font-semibold hover:underline">{product.name}</h3>
+                </Link>
+
+                <p className="text-gray-600 text-sm truncate">{product.description}</p>
                 <p className="mt-2 text-blue-600 font-bold">₹{product.price}</p>
 
                 {/* Cart Buttons */}
@@ -85,7 +89,7 @@ const ProductList = () => {
                   {quantity === 0 ? (
                     <button
                       className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
-                      onClick={() => handleAddToCart(product._id)}
+                      onClick={(e) => handleAddToCart(e, product._id)}
                     >
                       Add to Cart
                     </button>
@@ -93,14 +97,14 @@ const ProductList = () => {
                     <div className="flex items-center space-x-2">
                       <button
                         className="bg-gray-300 px-2 py-1 rounded text-xl"
-                        onClick={() => decrement(product._id)}
+                        onClick={(e) => decrement(e, product._id)}
                       >
                         -
                       </button>
                       <span className="text-lg font-semibold">{quantity}</span>
                       <button
                         className="bg-gray-300 px-2 py-1 rounded text-xl"
-                        onClick={() => increment(product._id)}
+                        onClick={(e) => increment(e, product._id)}
                       >
                         +
                       </button>
@@ -108,27 +112,6 @@ const ProductList = () => {
                   )}
                 </div>
               </div>
-=======
-            const imageUrl =
-              product.images?.length > 0
-                ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
-                : "https://via.placeholder.com/300x200";
-
-            return (
-              <Link key={product._id} to={`/products/${product._id}`}>
-                <div className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition cursor-pointer">
-                  <div className="w-full aspect-[4/3] bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                    <img
-                      src={imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-contain transition-transform duration-200 hover:scale-105"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold mt-3">{product.name}</h3>
-                  <p className="text-blue-600 font-bold mt-1">₹{product.price}</p>
-                </div>
-              </Link>
->>>>>>> be0fa89de227b931d510c3cfc6ca25c1be5bbaa5
             );
           })}
         </div>
@@ -138,5 +121,4 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
-
+  
