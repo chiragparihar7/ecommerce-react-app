@@ -54,7 +54,7 @@ console.log("item" + cartItems );
 
   const handleClearCart = async () => {
     try {
-      await axios.delete("/api/cart", headers);
+      await axios.delete("/api/clear", headers);
       fetchCart();
     } catch (err) {
       console.error("Failed to clear cart:", err);
