@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [cartQuantities, setCartQuantities] = useState({});
   const userToken = useSelector((state) => state.user.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {

@@ -114,14 +114,17 @@ const Header = () => {
       </div>
 
       {/* Cart */}
-      <button className="text-sm font-medium flex items-center">
-        <img
-          src="/src/assets/Cart-icon.png"
-          alt="Cart"
-          className="h-5 w-5 mr-1 object-contain"
-        />
-        Cart
-      </button>
+      <button
+  onClick={() => navigate("/cart")}
+  className="text-sm font-medium flex items-center hover:text-blue-600"
+>
+  <img
+    src="/src/assets/Cart-icon.png"
+    alt="Cart"
+    className="h-5 w-5 mr-1 object-contain"
+  />
+  Cart
+</button>
     </>
   ) : null}
 

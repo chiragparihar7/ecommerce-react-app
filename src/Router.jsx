@@ -26,22 +26,13 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* User Routes */}
+        {/* Public Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="productlist" element={<ProductList />} />
-        <Route path="/products/:productId" element={<ProductDetail/>} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/" element={<UserLayout />}>
-          <Route path="" element={<Home />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="Change-password" element={<ChangePassword />} />
-        </Route>
-
+        
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
-
         <Route path="/seller/dashboard" element={<SellerDashboard />}>
           <Route index element={<DashboardHome />} />
           <Route path="products" element={<ProductManagement />} />
@@ -49,12 +40,23 @@ const Router = () => {
           <Route path="edit-product/:id" element={<AddProduct />} />
           <Route path="orders" element={<OrderManagement />} />
         </Route>
+
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />}>
           <Route index element={<DashboardHomeAdmin />} />
           <Route path="categorys" element={<Categorys />} />
           <Route path="sellers" element={<SellerManagement />} />
+        </Route>
+
+        {/* User Layout (with Header/Footer) */}
+        <Route path="/" element={<UserLayout />}>
+          <Route index element={<Home />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="change-password" element={<ChangePassword />} />
+          <Route path="productlist" element={<ProductList />} />
+          <Route path="products/:productId" element={<ProductDetail />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
     </BrowserRouter>
