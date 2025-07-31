@@ -15,6 +15,8 @@ const getPasswordStrength = (password) => {
   return { label: "Medium", color: "orange" };
 };
 
+
+
 const ChangePassword = () => {
   const [showOld, setShowOld] = useState(false);
   const [showNew, setShowNew] = useState(false);
