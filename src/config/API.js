@@ -25,7 +25,7 @@ export const API = {
   USER_PROFILE: `${user}/profile`,
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
-  USER_PRODUCT_DETAILS: `${user}/products/details`,
+  PRODUCT_DETAILS: `/product/details`,
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
