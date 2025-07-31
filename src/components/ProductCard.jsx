@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 
 const ProductCard = ({ image, title, price, oldPrice, description, likedByUser }) => {
   const [liked, setLiked] = useState(likedByUser);
+  const navigate =  useNavigate();
+
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition hover:shadow-xl">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden w-[300px] transition hover:shadow-xl" >
       {/* Product Image */}
       <div className="relative">
-        <img src={image} alt={title} className="w-full h-48 object-cover" />
+        <img src={image} alt={title} className="w-full h-48 object-cover" onClick={() => navigate('products/')}/>
 
         {/* Like Icon */}
         <button

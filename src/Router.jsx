@@ -13,7 +13,6 @@ import Categorys from "./containers/admin/pages/category/Categorys.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 import Profile from "./containers/user/pages/Profile.jsx";
-import ProductList from "./containers/user/pages/ProductList.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
 import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
@@ -21,6 +20,7 @@ import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
 import ProductDetail from './containers/user/pages/ProductDetails.jsx';
 import Cart from './containers/user/pages/Cart.jsx';
+import ProductList from "./containers/user/layout/ProductList.jsx";
 
 const Router = () => {
   return (

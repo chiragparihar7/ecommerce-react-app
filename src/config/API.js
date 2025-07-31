@@ -1,9 +1,10 @@
 const seller = "/seller";
 const user = "/user";
 const admin = "/admin";
+const cart = "/cart";
 
-// const BASE = "http://localhost:5000";
-const BASE = "http://192.168.1.105:5000";
+const BASE = "http://localhost:5000";
+// const BASE = "http://192.168.1.105:5000";
 export const API = {
   BASE_URL: BASE,
   // Seller APIs
@@ -26,6 +27,11 @@ export const API = {
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
   PRODUCT_DETAILS: `/product/details`,
+  ADD_TO_CART: `${cart}/addIn`,
+  VIEW_CART: `${cart}/view`,
+  UPDATE_CART_ITEM: `${cart}/update`,      // PUT: Update quantity of a cart item
+  REMOVE_CART_ITEM: `${cart}/remove`,      // DELETE: Remove an item from cart
+  CLEAR_CART: `${cart}/clear`, 
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,

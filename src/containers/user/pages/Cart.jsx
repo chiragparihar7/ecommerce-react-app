@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector, } from "react-redux";
+import DataService from "../../../config/DataService";
+import API from "../../../config/API";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -17,7 +19,7 @@ console.log("item" + cartItems );
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("/api/cart/view", headers);
+      const res = await DataService(userToken).get(API.VIEW_CART);
       console.log("Cart Items Response:", res.data);
       if (res.data.success) {
         const items = res.data.data.items;
@@ -34,7 +36,7 @@ console.log("item" + cartItems );
   const updateQuantity = async (itemId, newQuantity) => {
     try {
       if (newQuantity < 1) return;
-      await axios.put(`/api/cart/${itemId}`, { quantity: newQuantity }, headers);
+      await DataService(userToken).put(`${API.UPDATE_ITEM}`(itemId), { quantity: newQuantity }, headers);
       fetchCart();
     } catch (err) {
       console.error("Failed to update quantity:", err);

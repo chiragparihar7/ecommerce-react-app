@@ -73,6 +73,9 @@ const ProductList = () => {
                   }
                   alt={product.name}
                   className="w-full h-48 object-cover rounded-md mb-3"
+
+
+                  onClick={() => navigate(`/products/${product._id}`)}
                 />
                 <h3 className="text-lg font-semibold">{product.name}</h3>
                 <p className="text-gray-600 text-sm truncate">
