@@ -17,7 +17,7 @@ console.log("item" + cartItems );
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("/api/cart/view", headers);
+      const res = await axios.get("http://localhost:5000/api/cart/view", headers);
       console.log("Cart Items Response:", res.data);
       if (res.data.success) {
         const items = res.data.data.items;
@@ -52,7 +52,7 @@ console.log("item" + cartItems );
 
   const handleClearCart = async () => {
     try {
-      await axios.delete("/api/cart", headers);
+      await axios.delete("/api/clear", headers);
       fetchCart();
     } catch (err) {
       console.error("Failed to clear cart:", err);
