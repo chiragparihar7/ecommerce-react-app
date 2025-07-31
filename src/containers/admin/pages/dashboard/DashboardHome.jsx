@@ -24,6 +24,8 @@ const DashboardHome = () => {
         DataService(adminToken).get(API.ADMIN_SALES_ANALYTICS),
       ]);
 
+      console.log(usersRes,"usersRes");
+
       setSummary({
         totalUsers: usersRes?.data?.count || 0,
         totalSellers: sellersRes?.data?.count || 0,

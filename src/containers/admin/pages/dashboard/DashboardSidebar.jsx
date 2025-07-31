@@ -1,16 +1,14 @@
-// src/containers/admin/pages/dashboard/DashboardSidebar.jsx
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { adminLogout } from "../../../../redux/slices/adminSlice"; 
-
+import { adminLogout } from "../../../../redux/slices/adminSlice";
 
 const DashboardSidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const admin = useSelector((state) => state.admin.admin);
-  
+
   const linkClasses = ({ isActive }) =>
     `block px-4 py-2 rounded hover:bg-blue-100 ${
       isActive ? "bg-blue-500 text-white" : "text-gray-700"
@@ -18,21 +16,28 @@ const DashboardSidebar = () => {
 
   const handleLogout = () => {
     dispatch(adminLogout());
-    navigate("/admin/login"); 
+    navigate("/admin/login");
   };
 
   return (
     <div className="w-64 h-screen bg-white shadow-md p-4 flex flex-col justify-between">
       <div>
         <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
+
         <NavLink to="/admin/dashboard" className={linkClasses}>
           Dashboard Home
         </NavLink>
+
         <NavLink to="/admin/dashboard/categorys" className={linkClasses}>
           Manage Categories
         </NavLink>
+
         <NavLink to="/admin/dashboard/sellers" className={linkClasses}>
           Manage Sellers
+        </NavLink>
+
+        <NavLink to="/admin/dashboard/users" className={linkClasses}>
+          Manage Users
         </NavLink>
       </div>
 

@@ -25,7 +25,7 @@ export const API = {
   USER_PROFILE: `${user}/profile`,
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
-  PRODUCT_DETAILS: `/product/details`,
+  USER_PRODUCT_DETAILS: `${user}/products/details`,
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
@@ -41,6 +41,11 @@ export const API = {
     `/admin/sellers/${sellerId}/toggle-status`,
   ADMIN_DELETE_SELLER: `${admin}/sellers`,
   ADMIN_ALL_USERS: `${admin}/allUsers`,
+  ADMIN_PRODUCT_LIST: `${admin}/product-list`,
+  ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
+    ADMIN_ALL_USERS: `${admin}/allUsers`, // ✅ for user management
+  ADMIN_TOGGLE_USER_STATUS: (userId) =>
+    `${admin}/users/${userId}/toggle-status`, // ✅ toggle active/block
   ADMIN_PRODUCT_LIST: `${admin}/product-list`,
   ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
 };
