@@ -6,7 +6,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-
+console.log("item" + cartItems );
   const token = useSelector((state) => state.user.token);
 
   const headers = {

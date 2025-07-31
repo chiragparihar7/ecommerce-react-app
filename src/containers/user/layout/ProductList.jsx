@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const userToken = useSelector((state) => state.user.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,19 +38,21 @@ const ProductList = () => {
                 : "https://via.placeholder.com/300x200";
 
             return (
-              <Link key={product._id} to={`/products/${product._id}`}>
-                <div className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition cursor-pointer">
-                  <div className="w-full aspect-[4/3] bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
-                    <img
-                      src={imageUrl}
-                      alt={product.name}
-                      className="w-full h-full object-contain transition-transform duration-200 hover:scale-105"
-                    />
-                  </div>
-                  <h3 className="text-lg font-semibold mt-3">{product.name}</h3>
-                  <p className="text-blue-600 font-bold mt-1">₹{product.price}</p>
+              <div
+                key={product._id}
+                onClick={() => navigate(`/products/${product._id}`)}
+                className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition cursor-pointer"
+              >
+                <div className="w-full aspect-[4/3] bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                  <img
+                    src={imageUrl}
+                    alt={product.name}
+                    className="w-full h-full object-contain transition-transform duration-200 hover:scale-105"
+                  />
                 </div>
-              </Link>
+                <h3 className="text-lg font-semibold mt-3">{product.name}</h3>
+                <p className="text-blue-600 font-bold mt-1">₹{product.price}</p>
+              </div>
             );
           })}
         </div>
