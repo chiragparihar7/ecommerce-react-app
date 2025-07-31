@@ -2,7 +2,8 @@ const seller = "/seller";
 const user = "/user";
 const admin = "/admin";
 
-const BASE = "http://localhost:5000";
+// const BASE = "http://localhost:5000";
+const BASE = "http://192.168.1.105:5000";
 export const API = {
   BASE_URL: BASE,
   // Seller APIs
