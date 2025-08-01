@@ -10,11 +10,11 @@ const ProductList = () => {
   const userToken = useSelector((state) => state.user.token);
   const navigate = useNavigate();
 
+  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);
-        console.log("Products fetched:", res.data);
         setProducts(res.data.products || []);
       } catch (error) {
         console.error("❌ Failed to fetch products", error?.response?.data || error.message);
