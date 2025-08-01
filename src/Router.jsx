@@ -13,7 +13,7 @@ import Categorys from "./containers/admin/pages/category/Categorys.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 import Profile from "./containers/user/pages/Profile.jsx";
-import ProductList from "./containers/user/pages/ProductList.jsx";
+import ProductList from "./containers/user/layout/ProductList.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
 import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";

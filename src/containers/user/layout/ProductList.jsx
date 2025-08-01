@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);

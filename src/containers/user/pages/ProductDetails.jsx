@@ -40,7 +40,7 @@ const handleAddToCart = async () => {
 
   try {
     await axios.post(
-      "http://192.168.1.105:5000/api/cart/addIn",
+      "http://localhost:5000/api/cart/addIn", 
       {
         productId: product._id,
         quantity: 1,
