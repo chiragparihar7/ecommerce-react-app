@@ -6,7 +6,7 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-
+console.log("item" + cartItems );
   const token = useSelector((state) => state.user.token);
 
   const headers = {
@@ -17,7 +17,7 @@ const Cart = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("/api/cart/view", headers);
+      const res = await axios.get("http://localhost:5000/api/cart/view", headers);
       console.log("Cart Items Response:", res.data);
       if (res.data.success) {
         const items = res.data.data.items;
@@ -52,7 +52,7 @@ const Cart = () => {
 
   const handleClearCart = async () => {
     try {
-      await axios.delete("/api/cart", headers);
+      await axios.delete("/api/clear", headers);
       fetchCart();
     } catch (err) {
       console.error("Failed to clear cart:", err);
