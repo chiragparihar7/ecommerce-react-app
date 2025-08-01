@@ -20,7 +20,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await DataService(userToken).get(`${API.PRODUCT_DETAILS}/${productId}`);
+        const res = await DataService(userToken).get(`${API.USER_PRODUCT_DETAILS}/${productId}`);
 
         console.log(res.data.product, ":res")
         setProduct(res.data.product);

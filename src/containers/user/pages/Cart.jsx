@@ -1,68 +1,58 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import DataService from "../../../config/DataService";
+import { API } from "../../../config/API";
+
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  console.log("item" + cartItems);
-  const token = useSelector((state) => state.user.token);
 
-  const headers = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  const token = useSelector((state) => state.user.token);
+  const service = DataService(token);
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/cart/view",
-        headers
-      );
-      console.log("Cart Items Response:", res.data);
+      const res = await DataService(token).get(API.USER_CART_VIEW);
       if (res.data.success) {
         const items = res.data.data.items;
         setCartItems(items);
         setTotal(res.data.data.meta.totalAmount);
       }
     } catch (err) {
-      console.error("Failed to fetch cart:", err);
+      console.error("❌ Failed to fetch cart:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const updateQuantity = async (itemId, newQuantity) => {
+    if (newQuantity < 1) return;
     try {
-      if (newQuantity < 1) return;
-      await axios.put(
-        `/api/cart/${itemId}`,
-        { quantity: newQuantity },
-        headers
-      );
+      await DataService(token).patch(API.USER_CART_UPDATE(itemId), {
+        quantity: newQuantity,
+      });
       fetchCart();
     } catch (err) {
-      console.error("Failed to update quantity:", err);
+      console.error("❌ Failed to update quantity:", err);
     }
   };
 
   const removeItem = async (itemId) => {
     try {
-      await axios.delete(`/api/cart/${itemId}`, headers);
+      await DataService(token).delete(API.USER_CART_REMOVE_ITEM(itemId));
       fetchCart();
     } catch (err) {
-      console.error("Failed to remove item:", err);
+      console.error("❌ Failed to remove item:", err);
     }
   };
 
   const handleClearCart = async () => {
     try {
-      await axios.delete("/api/clear", headers);
+      await DataService(token).delete(API.USER_CART_CLEAR);
       fetchCart();
     } catch (err) {
-      console.error("Failed to clear cart:", err);
+      console.error("❌ Failed to clear cart:", err);
     }
   };
 
@@ -75,6 +65,7 @@ const Cart = () => {
   return (
     <section className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">🛒 Your Cart</h2>
+
       {cartItems.length === 0 ? (
         <p className="text-gray-500">Your cart is empty.</p>
       ) : (
@@ -87,7 +78,14 @@ const Cart = () => {
               >
                 <div className="flex items-center gap-4">
                   <img
-                    src={product.images[0]} // assuming images is an array
+                    src={
+                      product.images?.[0]
+                        ? `${API.BASE_URL}/${product.images[0].replace(
+                            /^\/+/,
+                            ""
+                          )}`
+                        : "https://via.placeholder.com/300x200"
+                    }
                     alt={product.name}
                     className="w-20 h-20 object-contain border rounded-md"
                   />
