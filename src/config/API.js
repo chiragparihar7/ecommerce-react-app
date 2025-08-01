@@ -1,9 +1,10 @@
 const seller = "/seller";
 const user = "/user";
 const admin = "/admin";
+const cart = "/cart";
 
-// const BASE = "http://localhost:5000";
-const BASE = "http://192.168.1.105:5000";
+const BASE = "http://localhost:5000";
+// const BASE = "http://192.168.1.105:5000";
 export const API = {
   BASE_URL: BASE,
   // Seller APIs
@@ -25,10 +26,15 @@ export const API = {
   USER_PROFILE: `${user}/profile`,
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
-  USER_PRODUCT_DETAILS: `${user}/products/details`,
+  USER_PRODUCT_DETAILS: `/product/details`,
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
+  USER_CART_CLEAR: `${cart}/clear`, 
+  USER_CART_VIEW: `${cart}/view`,
+  USER_CART_ADD: `${cart}/addIn`, 
+  USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`, 
+  USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
 
   
   // Admin APIs
@@ -43,7 +49,7 @@ export const API = {
   ADMIN_ALL_USERS: `${admin}/allUsers`,
   ADMIN_PRODUCT_LIST: `${admin}/product-list`,
   ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
-    ADMIN_ALL_USERS: `${admin}/allUsers`, // ✅ for user management
+  ADMIN_ALL_USERS: `${admin}/allUsers`, // ✅ for user management
   ADMIN_TOGGLE_USER_STATUS: (userId) =>
     `${admin}/users/${userId}/toggle-status`, // ✅ toggle active/block
   ADMIN_PRODUCT_LIST: `${admin}/product-list`,
