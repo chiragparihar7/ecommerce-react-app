@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useSelector, } from "react-redux";
-
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-console.log("item" + cartItems );
+  console.log("item" + cartItems);
   const token = useSelector((state) => state.user.token);
 
   const headers = {
@@ -17,7 +17,10 @@ console.log("item" + cartItems );
 
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/cart/view", headers);
+      const res = await axios.get(
+        "http://localhost:5000/api/cart/view",
+        headers
+      );
       console.log("Cart Items Response:", res.data);
       if (res.data.success) {
         const items = res.data.data.items;
@@ -34,7 +37,11 @@ console.log("item" + cartItems );
   const updateQuantity = async (itemId, newQuantity) => {
     try {
       if (newQuantity < 1) return;
-      await axios.put(`/api/cart/${itemId}`, { quantity: newQuantity }, headers);
+      await axios.put(
+        `/api/cart/${itemId}`,
+        { quantity: newQuantity },
+        headers
+      );
       fetchCart();
     } catch (err) {
       console.error("Failed to update quantity:", err);
@@ -74,7 +81,10 @@ console.log("item" + cartItems );
         <>
           <div className="space-y-4">
             {cartItems.map(({ ItemId, product, requestedQuantity }) => (
-              <div key={ItemId} className="flex items-center justify-between border-b pb-3">
+              <div
+                key={ItemId}
+                className="flex items-center justify-between border-b pb-3"
+              >
                 <div className="flex items-center gap-4">
                   <img
                     src={product.images[0]} // assuming images is an array
@@ -87,14 +97,18 @@ console.log("item" + cartItems );
                     <div className="mt-2 flex items-center gap-2">
                       <button
                         className="px-2 py-1 bg-gray-200 rounded"
-                        onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
+                        onClick={() =>
+                          updateQuantity(ItemId, requestedQuantity - 1)
+                        }
                       >
                         -
                       </button>
                       <span>{requestedQuantity}</span>
                       <button
                         className="px-2 py-1 bg-gray-200 rounded"
-                        onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
+                        onClick={() =>
+                          updateQuantity(ItemId, requestedQuantity + 1)
+                        }
                       >
                         +
                       </button>
@@ -119,7 +133,9 @@ console.log("item" + cartItems );
             >
               Clear Cart
             </button>
-            <button className="bg-green-600 text-white px-4 py-2 rounded">Checkout</button>
+            <button className="bg-green-600 text-white px-4 py-2 rounded">
+              Checkout
+            </button>
           </div>
         </>
       )}
