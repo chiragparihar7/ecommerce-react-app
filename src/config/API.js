@@ -29,7 +29,7 @@ export const API = {
   PRODUCT_DETAILS: `/product/details`,
   ADD_TO_CART: `${cart}/addIn`,
   VIEW_CART: `${cart}/view`,
-  UPDATE_CART_ITEM: `${cart}/update`,      // PUT: Update quantity of a cart item
+  UPDATE_CART_ITEM: `${cart}/updateCart`,      // PUT: Update quantity of a cart item
   REMOVE_CART_ITEM: `${cart}/remove`,      // DELETE: Remove an item from cart
   CLEAR_CART: `${cart}/clear`, 
   USER_GET_CATEGORIES: `${user}/products/categories`,

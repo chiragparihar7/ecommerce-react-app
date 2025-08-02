@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -24,32 +24,60 @@ const ProductList = () => {
     fetchProducts();
   }, [userToken]);
 
-  const handleAddToCart = (e, productId) => {
+  const handleAddToCart = async (e, productId) => {
     e.stopPropagation();
-    setCartQuantities((prev) => ({
-      ...prev,
-      [productId]: 1, 
-    }));
+    try {
+      const res = await DataService(userToken).post(API.ADD_TO_CART, {
+        productId,
+        quantity: 1,
+      });
+
+      // Save cart item ID (optional if your backend returns it)
+      const itemId = res.data.cartItemId || productId;
+
+      setCartQuantities((prev) => ({
+        ...prev,
+        [productId]: { quantity: 1, itemId }, // Track itemId for updates
+      }));
+    } catch (error) {
+      console.error("❌ Add to cart failed:", error.response?.data || error.message);
+    }
+  };
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity < 1) return;
+
+    const itemId = cartQuantities[productId]?.itemId || productId;
+
+    try {
+      await DataService(userToken).put(`/cart/${itemId}`, {
+        quantity: newQuantity,
+      });
+
+      setCartQuantities((prev) => ({
+        ...prev,
+        [productId]: {
+          ...(prev[productId] || {}),
+          quantity: newQuantity,
+        },
+      }));
+    } catch (error) {
+      console.error("❌ Failed to update quantity:", error.response?.data || error.message);
+    }
   };
 
   const increment = (e, productId) => {
     e.stopPropagation();
-    setCartQuantities((prev) => ({
-      ...prev,
-      [productId]: (prev[productId] || 0) + 1,
-    }));
+    const currentQty = cartQuantities[productId]?.quantity || 1;
+    updateQuantity(productId, currentQty + 1);
   };
 
   const decrement = (e, productId) => {
     e.stopPropagation();
-    setCartQuantities((prev) => {
-      const newQty = (prev[productId] || 1) - 1;
-      if (newQty <= 0) {
-        const { [productId]: _, ...rest } = prev;
-        return rest;
-      }
-      return { ...prev, [productId]: newQty };
-    });
+    const currentQty = cartQuantities[productId]?.quantity || 1;
+    if (currentQty > 1) {
+      updateQuantity(productId, currentQty - 1);
+    }
   };
 
   return (
@@ -61,7 +89,7 @@ const ProductList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => {
-            const quantity = cartQuantities[product._id] || 0;
+            const quantity = cartQuantities[product._id]?.quantity || 0;
             const imageUrl =
               product.images?.length > 0
                 ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
@@ -72,7 +100,6 @@ const ProductList = () => {
                 key={product._id}
                 className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition cursor-pointer"
               >
-                {/* Clickable area (image + name) */}
                 <Link to={`/products/${product._id}`}>
                   <img
                     src={imageUrl}
@@ -85,7 +112,6 @@ const ProductList = () => {
                 <p className="text-gray-600 text-sm truncate">{product.description}</p>
                 <p className="mt-2 text-blue-600 font-bold">₹{product.price}</p>
 
-                {/* Cart Buttons */}
                 <div className="mt-4">
                   {quantity === 0 ? (
                     <button
@@ -122,4 +148,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-  
