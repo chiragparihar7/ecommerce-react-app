@@ -20,8 +20,13 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+<<<<<<< HEAD
         const res = await DataService(userToken).get(`${API.PRODUCT_DETAILS}/${productId}`);
  
+=======
+        const res = await DataService(userToken).get(`${API.USER_PRODUCT_DETAILS}/${productId}`);
+
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
         console.log(res.data.product, ":res")
         setProduct(res.data.product);
       } catch (error) {
@@ -39,8 +44,13 @@ const handleAddToCart = async () => {
   }
  
   try {
+<<<<<<< HEAD
     await DataService(userToken).post(
       `${API.ADD_TO_CART}`,
+=======
+    await axios.post(
+      "http://localhost:5000/api/cart/addIn", 
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
       {
         productId: product._id,
         quantity: 1,

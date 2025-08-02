@@ -9,18 +9,11 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
 
   const token = useSelector((state) => state.user.token);
-  const api = DataService(token);
-
-  const headers = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  const service = DataService(token);
 
   const fetchCart = async () => {
     try {
-      const res = await api.get(API.VIEW_CART, headers);
-      console.log("Cart Items Response:", res.data);
+      const res = await DataService(token).get(API.USER_CART_VIEW);
       if (res.data.success) {
         const items = res.data.data.items;
         setCartItems(items);
@@ -31,15 +24,20 @@ const Cart = () => {
         "Failed to fetch cart:",
         err?.response?.data || err.message
       );
+      console.error("❌ Failed to fetch cart:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const updateQuantity = async (itemId, newQuantity) => {
+    if (newQuantity < 1) return;
     try {
       if (newQuantity < 1) return;
       await api.patch(`${API.UPDATE_CART_ITEM}/${itemId}`, {
+        quantity: newQuantity,
+      });
+      await DataService(token).patch(API.USER_CART_UPDATE(itemId), {
         quantity: newQuantity,
       });
       fetchCart();
@@ -48,30 +46,35 @@ const Cart = () => {
         "Failed to update quantity:",
         err?.response?.data || err.message
       );
+      console.error("❌ Failed to update quantity:", err);
     }
   };
 
   const removeItem = async (itemId) => {
     try {
       await api.delete(`${API.REMOVE_CART_ITEM}/${itemId}`, headers);
+      await DataService(token).delete(API.USER_CART_REMOVE_ITEM(itemId));
       fetchCart();
     } catch (err) {
       console.error(
         "Failed to remove item:",
         err?.response?.data || err.message
       );
+      console.error("❌ Failed to remove item:", err);
     }
   };
 
   const handleClearCart = async () => {
     try {
       await api.delete(API.CLEAR_CART, headers);
+      await DataService(token).delete(API.USER_CART_CLEAR);
       fetchCart();
     } catch (err) {
       console.error(
         "Failed to clear cart:",
         err?.response?.data || err.message
       );
+      console.error("❌ Failed to clear cart:", err);
     }
   };
 
@@ -140,6 +143,56 @@ const Cart = () => {
                 </div>
               );
             })}
+            {cartItems.map(({ ItemId, product, requestedQuantity }) => (
+              <div
+                key={ItemId}
+                className="flex items-center justify-between border-b pb-3"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src={
+                      product.images?.[0]
+                        ? `${API.BASE_URL}/${product.images[0].replace(
+                            /^\/+/,
+                            ""
+                          )}`
+                        : "https://via.placeholder.com/300x200"
+                    }
+                    alt={product.name}
+                    className="w-20 h-20 object-contain border rounded-md"
+                  />
+                  <div>
+                    <h3 className="font-semibold">{product.name}</h3>
+                    <p className="text-blue-600">₹{product.price}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded"
+                        onClick={() =>
+                          updateQuantity(ItemId, requestedQuantity - 1)
+                        }
+                      >
+                        -
+                      </button>
+                      <span>{requestedQuantity}</span>
+                      <button
+                        className="px-2 py-1 bg-gray-200 rounded"
+                        onClick={() =>
+                          updateQuantity(ItemId, requestedQuantity + 1)
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeItem(ItemId)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
           </div>
 
           <div className="mt-6 text-right">

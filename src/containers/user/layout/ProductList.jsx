@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
+<<<<<<< HEAD
 import { useNavigate, Link } from "react-router-dom";
+=======
+import { Link, useNavigate } from "react-router-dom";
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -10,11 +14,11 @@ const ProductList = () => {
   const userToken = useSelector((state) => state.user.token);
   const navigate = useNavigate();
 
+  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);
-        console.log("Products fetched:", res.data);
         setProducts(res.data.products || []);
       } catch (error) {
         console.error("❌ Failed to fetch products", error?.response?.data || error.message);
@@ -148,3 +152,7 @@ const ProductList = () => {
 };
 
 export default ProductList;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c

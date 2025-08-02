@@ -13,6 +13,10 @@ import Categorys from "./containers/admin/pages/category/Categorys.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 import Profile from "./containers/user/pages/Profile.jsx";
+<<<<<<< HEAD
+=======
+import ProductList from "./containers/user/layout/ProductList.jsx";
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
 import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
 import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
@@ -20,7 +24,11 @@ import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
 import ProductDetail from './containers/user/pages/ProductDetails.jsx';
 import Cart from './containers/user/pages/Cart.jsx';
+<<<<<<< HEAD
 import ProductList from "./containers/user/layout/ProductList.jsx";
+=======
+import UsersManagement from "./containers/admin/pages/users/UsersManagement.jsx";
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
 
 const Router = () => {
   return (
@@ -47,6 +55,7 @@ const Router = () => {
           <Route index element={<DashboardHomeAdmin />} />
           <Route path="categorys" element={<Categorys />} />
           <Route path="sellers" element={<SellerManagement />} />
+          <Route path="users" element={<UsersManagement />}/>
         </Route>
 
         {/* User Layout (with Header/Footer) */}

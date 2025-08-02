@@ -26,15 +26,24 @@ export const API = {
   USER_PROFILE: `${user}/profile`,
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
+<<<<<<< HEAD
   PRODUCT_DETAILS: `/product/details`,
   ADD_TO_CART: `${cart}/addIn`,
   VIEW_CART: `${cart}/view`,
   UPDATE_CART_ITEM: `${cart}/updateCart`,      // PUT: Update quantity of a cart item
   REMOVE_CART_ITEM: `${cart}/remove`,      // DELETE: Remove an item from cart
   CLEAR_CART: `${cart}/clear`, 
+=======
+  USER_PRODUCT_DETAILS: `/product/details`,
+>>>>>>> c84a955ad6ea777d487bc6e3e979e1542eed920c
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
+  USER_CART_CLEAR: `${cart}/clear`, 
+  USER_CART_VIEW: `${cart}/view`,
+  USER_CART_ADD: `${cart}/addIn`, 
+  USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`, 
+  USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
 
   
   // Admin APIs
@@ -47,6 +56,11 @@ export const API = {
     `/admin/sellers/${sellerId}/toggle-status`,
   ADMIN_DELETE_SELLER: `${admin}/sellers`,
   ADMIN_ALL_USERS: `${admin}/allUsers`,
+  ADMIN_PRODUCT_LIST: `${admin}/product-list`,
+  ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
+  ADMIN_ALL_USERS: `${admin}/allUsers`, // ✅ for user management
+  ADMIN_TOGGLE_USER_STATUS: (userId) =>
+    `${admin}/users/${userId}/toggle-status`, // ✅ toggle active/block
   ADMIN_PRODUCT_LIST: `${admin}/product-list`,
   ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
 };
