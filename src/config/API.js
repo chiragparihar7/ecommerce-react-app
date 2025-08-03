@@ -2,6 +2,7 @@ const seller = "/seller";
 const user = "/user";
 const admin = "/admin";
 const cart = "/cart";
+const order = "/order";
 
 const BASE = "http://localhost:5000";
 // const BASE = "http://192.168.1.105:5000";
@@ -30,13 +31,15 @@ export const API = {
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
-  USER_CART_CLEAR: `${cart}/clear`, 
+  USER_CART_CLEAR: `${cart}/clear`,
   USER_CART_VIEW: `${cart}/view`,
-  USER_CART_ADD: `${cart}/addIn`, 
-  USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`, 
+  USER_CART_ADD: `${cart}/addIn`,
+  USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`,
   USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
+  USER_PLACE_ORDER: `${order}/checkout`,
+  USER_ORDER_HISTORY: `${order}/orderHistory`,
+  USER_ORDER_CANCEL: (orderId) => `${order}/${orderId}/cancel`,
 
-  
   // Admin APIs
   ADMIN_LOGIN: `${admin}/login`,
   ADMIN_CATEGORY_LIST: `${admin}/category-list`,

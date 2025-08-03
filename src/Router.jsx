@@ -19,10 +19,11 @@ import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
-import ProductDetail from './containers/user/pages/ProductDetails.jsx';
-import Cart from './containers/user/pages/Cart.jsx';
+import ProductDetail from "./containers/user/pages/ProductDetails.jsx";
+import Cart from "./containers/user/pages/Cart.jsx";
 import UsersManagement from "./containers/admin/pages/users/UsersManagement.jsx";
-
+import Checkout from "./containers/user/pages/CheckOut.jsx";
+import OrderHistory from "./containers/user/pages/OrderHistory.jsx";
 const Router = () => {
   return (
     <BrowserRouter>
@@ -30,7 +31,7 @@ const Router = () => {
         {/* Public Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+
         {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
@@ -48,7 +49,7 @@ const Router = () => {
           <Route index element={<DashboardHomeAdmin />} />
           <Route path="categorys" element={<Categorys />} />
           <Route path="sellers" element={<SellerManagement />} />
-          <Route path="users" element={<UsersManagement />}/>
+          <Route path="users" element={<UsersManagement />} />
         </Route>
 
         {/* User Layout (with Header/Footer) */}
@@ -59,6 +60,8 @@ const Router = () => {
           <Route path="productlist" element={<ProductList />} />
           <Route path="products/:productId" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<OrderHistory />} />
         </Route>
       </Routes>
     </BrowserRouter>
