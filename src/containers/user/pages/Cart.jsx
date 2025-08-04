@@ -83,7 +83,7 @@ const Cart = () => {
         shippingAddress: address,
       });
       if (res.data.success) {
-        navigate("/order");
+        navigate("/orders"); // ✅ Fixed navigation path
       }
     } catch (err) {
       console.error("❌ Order creation error:", err?.response?.data || err.message);
