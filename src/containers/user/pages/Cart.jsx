@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 
@@ -7,24 +8,22 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [address, setAddress] = useState("");
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   const token = useSelector((state) => state.user.token);
-  const service = DataService(token);
+  const api = DataService(token);
+  const navigate = useNavigate();
 
   const fetchCart = async () => {
     try {
-      const res = await DataService(token).get(API.USER_CART_VIEW);
+      const res = await api.get(API.VIEW_CART);
       if (res.data.success) {
-        const items = res.data.data.items;
-        setCartItems(items);
+        setCartItems(res.data.data.items);
         setTotal(res.data.data.meta.totalAmount);
       }
     } catch (err) {
-      console.error(
-        "Failed to fetch cart:",
-        err?.response?.data || err.message
-      );
-      console.error("❌ Failed to fetch cart:", err);
+      console.error("❌ Fetch cart error:", err?.response?.data || err.message);
     } finally {
       setLoading(false);
     }
@@ -33,57 +32,58 @@ const Cart = () => {
   const updateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      if (newQuantity < 1) return;
       await api.patch(`${API.UPDATE_CART_ITEM}/${itemId}`, {
-        quantity: newQuantity,
-      });
-      await DataService(token).patch(API.USER_CART_UPDATE(itemId), {
         quantity: newQuantity,
       });
       fetchCart();
     } catch (err) {
-      console.error(
-        "Failed to update quantity:",
-        err?.response?.data || err.message
-      );
-      console.error("❌ Failed to update quantity:", err);
+      console.error("❌ Update quantity error:", err?.response?.data || err.message);
     }
   };
 
   const removeItem = async (itemId) => {
     try {
-      await api.delete(`${API.REMOVE_CART_ITEM}/${itemId}`, headers);
-      await DataService(token).delete(API.USER_CART_REMOVE_ITEM(itemId));
+      await api.delete(`${API.REMOVE_CART_ITEM}/${itemId}`);
       fetchCart();
     } catch (err) {
-      console.error(
-        "Failed to remove item:",
-        err?.response?.data || err.message
-      );
-      console.error("❌ Failed to remove item:", err);
+      console.error("❌ Remove item error:", err?.response?.data || err.message);
     }
   };
 
   const handleClearCart = async () => {
     try {
-      await api.delete(API.CLEAR_CART, headers);
-      await DataService(token).delete(API.USER_CART_CLEAR);
+      await api.delete(API.CLEAR_CART);
       fetchCart();
     } catch (err) {
-      console.error(
-        "Failed to clear cart:",
-        err?.response?.data || err.message
-      );
-      console.error("❌ Failed to clear cart:", err);
+      console.error("❌ Clear cart error:", err?.response?.data || err.message);
     }
   };
+
+  const handleCheckout = async () => {
+  if (!address.trim() || address.length < 5) return;
+  try {
+    setIsCheckoutLoading(true);
+
+    const res = await api.post(API.CREATE_ORDER, { shippingAddress: address });
+
+    if (res.data.success) {
+      navigate("/order");
+    }
+  } catch (err) {
+    console.error("❌ Order creation error:", err?.response?.data || err.message);
+  } finally {
+    setIsCheckoutLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchCart();
   }, []);
 
-  if (loading)
-    return <p className="text-center py-10 text-gray-500">Loading...</p>;
+  const isAddressValid = address.trim().length >= 5;
+
+  if (loading) return <p className="text-center py-10 text-gray-500">Loading...</p>;
 
   return (
     <section className="max-w-4xl mx-auto p-6">
@@ -95,9 +95,11 @@ const Cart = () => {
         <>
           <div className="space-y-4">
             {cartItems.map(({ ItemId, product, requestedQuantity }) => {
-              const imageUrl = product.images[0]?.startsWith("http")
-                ? product.images[0]
-                : `${API.BASE_URL}${product.images[0]}`;
+              const imageUrl = product.images?.[0]
+                ? product.images[0].startsWith("http")
+                  ? product.images[0]
+                  : `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
+                : "https://via.placeholder.com/300x200";
 
               return (
                 <div
@@ -116,18 +118,14 @@ const Cart = () => {
                       <div className="mt-2 flex items-center gap-2">
                         <button
                           className="px-2 py-1 bg-gray-200 rounded"
-                          onClick={() =>
-                            updateQuantity(ItemId, requestedQuantity - 1)
-                          }
+                          onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
                         >
                           -
                         </button>
                         <span>{requestedQuantity}</span>
                         <button
                           className="px-2 py-1 bg-gray-200 rounded"
-                          onClick={() =>
-                            updateQuantity(ItemId, requestedQuantity + 1)
-                          }
+                          onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
                         >
                           +
                         </button>
@@ -143,58 +141,21 @@ const Cart = () => {
                 </div>
               );
             })}
-            {cartItems.map(({ ItemId, product, requestedQuantity }) => (
-              <div
-                key={ItemId}
-                className="flex items-center justify-between border-b pb-3"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src={
-                      product.images?.[0]
-                        ? `${API.BASE_URL}/${product.images[0].replace(
-                            /^\/+/,
-                            ""
-                          )}`
-                        : "https://via.placeholder.com/300x200"
-                    }
-                    alt={product.name}
-                    className="w-20 h-20 object-contain border rounded-md"
-                  />
-                  <div>
-                    <h3 className="font-semibold">{product.name}</h3>
-                    <p className="text-blue-600">₹{product.price}</p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <button
-                        className="px-2 py-1 bg-gray-200 rounded"
-                        onClick={() =>
-                          updateQuantity(ItemId, requestedQuantity - 1)
-                        }
-                      >
-                        -
-                      </button>
-                      <span>{requestedQuantity}</span>
-                      <button
-                        className="px-2 py-1 bg-gray-200 rounded"
-                        onClick={() =>
-                          updateQuantity(ItemId, requestedQuantity + 1)
-                        }
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => removeItem(ItemId)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
           </div>
 
+          {/* Address Input */}
+          <div className="mt-6">
+            <label className="block text-sm font-medium mb-2">Enter Delivery Address</label>
+            <textarea
+              className="w-full border rounded-md p-2"
+              rows={3}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="123 Street, City, State, ZIP"
+            />
+          </div>
+
+          {/* Buttons */}
           <div className="mt-6 text-right">
             <p className="text-lg font-bold mb-2">Total: ₹{total}</p>
             <button
@@ -203,8 +164,14 @@ const Cart = () => {
             >
               Clear Cart
             </button>
-            <button className="bg-green-600 text-white px-4 py-2 rounded">
-              Checkout
+            <button
+              className={`px-4 py-2 rounded text-white ${
+                isAddressValid ? "bg-green-600" : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!isAddressValid || isCheckoutLoading}
+              onClick={handleCheckout}
+            >
+              {isCheckoutLoading ? "Processing..." : "Checkout"}
             </button>
           </div>
         </>
