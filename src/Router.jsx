@@ -13,17 +13,23 @@ import Categorys from "./containers/admin/pages/category/Categorys.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 import Profile from "./containers/user/pages/Profile.jsx";
-import ProductList from "./containers/user/layout/ProductList.jsx";
 import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
 import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
+<<<<<<< HEAD
+import ProductDetail from './containers/user/pages/ProductDetails.jsx';
+import Cart from './containers/user/pages/Cart.jsx';
+import ProductList from "./containers/user/layout/ProductList.jsx";
+import UsersManagement from '../src/containers/admin/pages/users/UsersManagement.jsx'
+=======
 import ProductDetail from "./containers/user/pages/ProductDetails.jsx";
 import Cart from "./containers/user/pages/Cart.jsx";
 import UsersManagement from "./containers/admin/pages/users/UsersManagement.jsx";
 import Checkout from "./containers/user/pages/CheckOut.jsx";
 import OrderHistory from "./containers/user/pages/OrderHistory.jsx";
+>>>>>>> c5ad4eeeb3108155d16f29421c9e05bd8830d125
 const Router = () => {
   return (
     <BrowserRouter>
