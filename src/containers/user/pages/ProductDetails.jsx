@@ -37,7 +37,7 @@ const handleAddToCart = async () => {
     toast.error("Please log in to add items to your cart.");
     return;
   }
- 
+
   try {
     await DataService(userToken).post(
       `${API.ADD_TO_CART}`,
@@ -52,8 +52,7 @@ const handleAddToCart = async () => {
       }
     );
     toast.success("Added to cart!");
-   
-    navigate("/cart");
+    // Removed this line: navigate("/cart");
   } catch (error) {
     console.error("Add to cart failed:", error?.response?.data || error.message);
     toast.error(
@@ -61,6 +60,7 @@ const handleAddToCart = async () => {
     );
   }
 };
+
  
  
  

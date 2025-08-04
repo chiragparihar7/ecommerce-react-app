@@ -44,7 +44,7 @@ export const API = {
   USER_CART_ADD: `${cart}/addIn`,
   USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`,
   USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
-  USER_PLACE_ORDER: `${order}/checkout`,
+  CREATE_ORDER: `${order}/checkout`, // Resolves to /order/checkout
   USER_ORDER_HISTORY: `${order}/orderHistory`,
   USER_ORDER_CANCEL: (orderId) => `${order}/${orderId}/cancel`,
 
