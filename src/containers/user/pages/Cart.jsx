@@ -8,16 +8,24 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [address, setAddress] = useState("");
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
-  const token = useSelector((state) => state.user.token);
-  const api = DataService(token);
+  const [address, setAddress] = useState({
+    name: "",
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+    country: "",
+  });
+
   const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+  const service = DataService(token);
 
   const fetchCart = async () => {
     try {
-      const res = await api.get(API.VIEW_CART);
+      const res = await service.get(API.USER_CART_VIEW);
       if (res.data.success) {
         setCartItems(res.data.data.items);
         setTotal(res.data.data.meta.totalAmount);
@@ -32,7 +40,7 @@ const Cart = () => {
   const updateQuantity = async (itemId, newQuantity) => {
     if (newQuantity < 1) return;
     try {
-      await api.patch(`${API.UPDATE_CART_ITEM}/${itemId}`, {
+      await service.patch(API.USER_CART_UPDATE(itemId), {
         quantity: newQuantity,
       });
       fetchCart();
@@ -43,7 +51,7 @@ const Cart = () => {
 
   const removeItem = async (itemId) => {
     try {
-      await api.delete(`${API.REMOVE_CART_ITEM}/${itemId}`);
+      await service.delete(API.USER_CART_REMOVE_ITEM(itemId));
       fetchCart();
     } catch (err) {
       console.error("❌ Remove item error:", err?.response?.data || err.message);
@@ -52,45 +60,50 @@ const Cart = () => {
 
   const handleClearCart = async () => {
     try {
-      await api.delete(API.CLEAR_CART);
+      await service.delete(API.USER_CART_CLEAR);
       fetchCart();
     } catch (err) {
       console.error("❌ Clear cart error:", err?.response?.data || err.message);
     }
   };
 
+  const isAddressValid =
+    address.name.trim() &&
+    address.street.trim() &&
+    address.city.trim() &&
+    address.state.trim() &&
+    address.zip.trim() &&
+    address.country.trim();
+
   const handleCheckout = async () => {
-  if (!address.trim() || address.length < 5) return;
-  try {
-    setIsCheckoutLoading(true);
-
-    const res = await api.post(API.CREATE_ORDER, { shippingAddress: address });
-
-    if (res.data.success) {
-      navigate("/order");
+    if (!isAddressValid) return;
+    try {
+      setIsCheckoutLoading(true);
+      const res = await service.post(API.CREATE_ORDER, {
+        shippingAddress: address,
+      });
+      if (res.data.success) {
+        navigate("/order");
+      }
+    } catch (err) {
+      console.error("❌ Order creation error:", err?.response?.data || err.message);
+    } finally {
+      setIsCheckoutLoading(false);
     }
-  } catch (err) {
-    console.error("❌ Order creation error:", err?.response?.data || err.message);
-  } finally {
-    setIsCheckoutLoading(false);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchCart();
   }, []);
 
-  const isAddressValid = address.trim().length >= 5;
-
   if (loading) return <p className="text-center py-10 text-gray-500">Loading...</p>;
 
   return (
-    <section className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">🛒 Your Cart</h2>
+    <section className="max-w-7xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-8 text-center">🛒 Your Cart</h2>
 
       {cartItems.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
+        <p className="text-center text-gray-500 text-lg">Your cart is empty.</p>
       ) : (
         <>
           <div className="space-y-4">
@@ -143,19 +156,53 @@ const Cart = () => {
             })}
           </div>
 
-          {/* Address Input */}
-          <div className="mt-6">
-            <label className="block text-sm font-medium mb-2">Enter Delivery Address</label>
-            <textarea
-              className="w-full border rounded-md p-2"
-              rows={3}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="123 Street, City, State, ZIP"
+          {/* Address Form */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Name"
+              className="border rounded-md p-2"
+              value={address.name}
+              onChange={(e) => setAddress({ ...address, name: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Street"
+              className="border rounded-md p-2"
+              value={address.street}
+              onChange={(e) => setAddress({ ...address, street: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="City"
+              className="border rounded-md p-2"
+              value={address.city}
+              onChange={(e) => setAddress({ ...address, city: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="State"
+              className="border rounded-md p-2"
+              value={address.state}
+              onChange={(e) => setAddress({ ...address, state: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="ZIP"
+              className="border rounded-md p-2"
+              value={address.zip}
+              onChange={(e) => setAddress({ ...address, zip: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              className="border rounded-md p-2"
+              value={address.country}
+              onChange={(e) => setAddress({ ...address, country: e.target.value })}
             />
           </div>
 
-          {/* Buttons */}
+          {/* Actions */}
           <div className="mt-6 text-right">
             <p className="text-lg font-bold mb-2">Total: ₹{total}</p>
             <button
