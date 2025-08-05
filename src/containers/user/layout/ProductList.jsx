@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -18,6 +20,7 @@ const ProductList = () => {
         setProducts(res.data.products || []);
       } catch (error) {
         console.error("❌ Failed to fetch products", error?.response?.data || error.message);
+        toast.error("Failed to load products");
       } finally {
         setLoading(false);
       }
@@ -37,32 +40,29 @@ const ProductList = () => {
         ...prev,
         [productId]: { quantity: 1, itemId },
       }));
+      toast.success("Added to cart ✅");
     } catch (error) {
       console.error("❌ Add to cart failed:", error.response?.data || error.message);
+      toast.error("Failed to add to cart");
     }
   };
 
-  const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity < 1) return;
-    const itemId = cartQuantities[productId]?.itemId || productId;
-    try {
-      await DataService(userToken).put(`/cart/${itemId}`, { quantity: newQuantity });
-      setCartQuantities((prev) => ({
-        ...prev,
-        [productId]: {
-          ...(prev[productId] || {}),
-          quantity: newQuantity,
-        },
-      }));
-    } catch (error) {
-      console.error("❌ Failed to update quantity:", error.response?.data || error.message);
-    }
-  };
+  const updateQuantity = async (itemId, newQuantity) => {
+     if (newQuantity < 1) return;
+     try {
+       await DataService(userToken).patch(API.USER_CART_UPDATE(itemId), {
+         quantity: newQuantity,
+       });
+       fetchCart();
+     } catch (err) {
+       console.error("❌ Update quantity error:", err?.response?.data || err.message);
+     }
+   };
 
   const increment = (e, productId) => {
     e.stopPropagation();
     const currentQty = cartQuantities[productId]?.quantity || 1;
-    updateQuantity(productId, currentQty + 1);
+    updateQuantity(cartQuantities[productId]?.itemId, currentQty + 1);
   };
 
   const decrement = (e, productId) => {
