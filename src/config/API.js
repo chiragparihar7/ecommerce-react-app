@@ -20,7 +20,7 @@ export const API = {
   SELLER_UPDATE_ORDER_STATUS: (orderId, itemId) =>
     `${seller}/orders/${orderId}/items/${itemId}`,
   SELLER_IMAGE_UPLOAD: `${seller}/image-upload`,
-
+  SELLER_DELETE_ORDER: (orderId) => `${seller}/orders/${orderId}`,
   // User APIs
   USER_REGISTER: `${user}/signup`,
   USER_LOGIN: `${user}/login`,
