@@ -77,17 +77,19 @@ const OrderManagement = () => {
   // ✅ Optional delete function (local only unless backend API exists)
   const handleDelete = async (orderId) => {
     if (window.confirm("Are you sure to delete this order?")) {
-     try {
-      const res = await DataService(sellerToken).delete(API.SELLER_DELETE_ORDER(orderId));
-      if(res.data.success){
-        toast.success("Order Delete Successfully");
-        setOrders((prev) => prev.filter((order) => order._id !== orderId))
-      }else {
-        toast.error("Failed To delete order");
+      try {
+        const res = await DataService(sellerToken).delete(
+          API.SELLER_DELETE_ORDER(orderId)
+        );
+        if (res.data.success) {
+          toast.success("Order Delete Successfully");
+          setOrders((prev) => prev.filter((order) => order._id !== orderId));
+        } else {
+          toast.error("Failed To delete order");
+        }
+      } catch (err) {
+        toast.error("Error Deleting Order");
       }
-     } catch (err){
-        toast.error("Error Deleting Order")
-     }
     }
   };
 
@@ -101,6 +103,8 @@ const OrderManagement = () => {
             <th className="px-4 py-2 text-left">Customer</th>
             <th className="px-4 py-2 text-left">Item</th>
             <th className="px-4 py-2 text-left">Price</th>
+            <th className="px-4 py-2 text-left">Quantity</th>
+            <th className="px-4 py-2 text-left">Total</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Actions</th>
           </tr>
@@ -115,6 +119,8 @@ const OrderManagement = () => {
                   {item.productName || "Unnamed Item"}
                 </td>
                 <td className="px-4 py-2">₹{item.price || 0}</td>
+                <td className="px-4 py-2">{item.quantity}</td>
+                <td className="px-4 py-2">₹{item.quantity * item.price}</td>
                 <td className="px-4 py-2">{item.status}</td>
                 <td className="px-4 py-2 space-x-2">
                   <select
