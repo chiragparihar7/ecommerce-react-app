@@ -75,10 +75,19 @@ const OrderManagement = () => {
   };
 
   // ✅ Optional delete function (local only unless backend API exists)
-  const handleDelete = (orderId) => {
+  const handleDelete = async (orderId) => {
     if (window.confirm("Are you sure to delete this order?")) {
-      setOrders((prev) => prev.filter((order) => order._id !== orderId));
-      // ❌ No API call to delete from backend
+     try {
+      const res = await DataService(sellerToken).delete(API.SELLER_DELETE_ORDER(orderId));
+      if(res.data.success){
+        toast.success("Order Delete Successfully");
+        setOrders((prev) => prev.filter((order) => order._id !== orderId))
+      }else {
+        toast.error("Failed To delete order");
+      }
+     } catch (err){
+        toast.error("Error Deleting Order")
+     }
     }
   };
 
