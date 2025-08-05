@@ -1,4 +1,3 @@
-// DashboardHome.jsx
 import React, { useEffect, useState } from "react";
 import DataService from "../../../../config/DataService";
 import { API } from "../../../../config/API";
@@ -24,50 +23,66 @@ const DashboardHome = () => {
         DataService(adminToken).get(API.ADMIN_SALES_ANALYTICS),
       ]);
 
-      console.log(usersRes,"usersRes");
+      console.log("\uD83D\uDC64 Users Response:", usersRes.data);
+      console.log("\uD83D\uDECD\uFE0F Sellers Response:", sellersRes.data);
+      console.log("\uD83D\uDCE6 Products Response:", productsRes.data);
+      console.log("\uD83D\uDCB0 Sales Response:", salesRes.data);
 
       setSummary({
-        totalUsers: usersRes?.data?.count || 0,
-        totalSellers: sellersRes?.data?.count || 0,
+        totalUsers: usersRes?.data?.count || usersRes?.data?.users?.length || 0,
+        totalSellers:
+          sellersRes?.data?.count || sellersRes?.data?.sellers?.length || 0,
         totalProducts: productsRes?.data?.products?.length || 0,
         totalSales: salesRes?.data?.totalSales || 0,
       });
     } catch (err) {
+      console.error(
+        "\u274C Dashboard Error:",
+        err.response?.data || err.message
+      );
       toast.error("Error fetching dashboard data");
     }
   };
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (adminToken) fetchDashboardData();
+  }, [adminToken]);
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">📊 Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6"> Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Users */}
         <div className="bg-white p-5 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-2">👤 Total Users</h2>
-          <p className="text-2xl font-bold text-blue-600">{summary.totalUsers}</p>
+          <h2 className="text-sm text-gray-500 mb-2">Total Users</h2>
+          <p className="text-2xl font-bold text-blue-600">
+            {summary.totalUsers}
+          </p>
         </div>
 
         {/* Total Sellers */}
         <div className="bg-white p-5 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-2">🛍️ Total Sellers</h2>
-          <p className="text-2xl font-bold text-green-600">{summary.totalSellers}</p>
+          <h2 className="text-sm text-gray-500 mb-2">Total Sellers</h2>
+          <p className="text-2xl font-bold text-green-600">
+            {summary.totalSellers}
+          </p>
         </div>
 
         {/* Total Products */}
         <div className="bg-white p-5 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-2">📦 Total Products</h2>
-          <p className="text-2xl font-bold text-purple-600">{summary.totalProducts}</p>
+          <h2 className="text-sm text-gray-500 mb-2">Total Products</h2>
+          <p className="text-2xl font-bold text-purple-600">
+            {summary.totalProducts}
+          </p>
         </div>
 
         {/* Total Sales */}
         <div className="bg-white p-5 rounded-lg shadow">
-          <h2 className="text-sm text-gray-500 mb-2">💰 Total Sales</h2>
-          <p className="text-2xl font-bold text-red-600">₹{summary.totalSales.toLocaleString()}</p>
+          <h2 className="text-sm text-gray-500 mb-2">Total Sales</h2>
+          <p className="text-2xl font-bold text-red-600">
+            ₹{summary.totalSales.toLocaleString()}
+          </p>
         </div>
       </div>
     </div>

@@ -13,9 +13,10 @@ import Categorys from "./containers/admin/pages/category/Categorys.jsx";
 import AdminLogin from "./containers/admin/auth/login/Login.jsx";
 import OrderManagement from "./containers/seller/dashboard/OrderManagement.jsx";
 import Profile from "./containers/user/pages/Profile.jsx";
-import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard";
-import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome";
-import SellerManagement from "./containers/admin/pages/seller/SellerManagement";
+import ProductList from "./containers/user/layout/ProductList.jsx";
+import AdminDashboard from "./containers/admin/pages/dashboard/AdminDashboard.jsx";
+import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome.jsx";
+import SellerManagement from "./containers/admin/pages/seller/SellerManagement.jsx";
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
 import ProductDetail from './containers/user/pages/ProductDetails.jsx';
@@ -24,6 +25,8 @@ import ProductList from "./containers/user/layout/ProductList.jsx";
 import UsersManagement from '../src/containers/admin/pages/users/UsersManagement.jsx'
 import Checkout from "./containers/user/pages/Checkout.jsx";
 import OrderHistory from "./containers/user/pages/OrderHistory.jsx";
+import SellerPrivateRoute from "./routes/SellerPrivateRoute.jsx";
+import AdminPrivateRoute from "./routes/AdminPrivateRoute.jsx";
 
 const Router = () => {
   return (
@@ -32,25 +35,29 @@ const Router = () => {
         {/* Public Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        {/* Seller Routes */}
         <Route path="/seller/register" element={<SellerRegister />} />
         <Route path="/seller/login" element={<SellerLogin />} />
-        <Route path="/seller/dashboard" element={<SellerDashboard />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="products" element={<ProductManagement />} />
-          <Route path="add-product" element={<AddProduct />} />
-          <Route path="edit-product/:id" element={<AddProduct />} />
-          <Route path="orders" element={<OrderManagement />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/*  Protected Seller Routes */}
+        <Route element={<SellerPrivateRoute />}>
+          <Route path="/seller/dashboard" element={<SellerDashboard />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="products" element={<ProductManagement />} />
+            <Route path="add-product" element={<AddProduct />} />
+            <Route path="edit-product/:id" element={<AddProduct />} />
+            <Route path="orders" element={<OrderManagement />} />
+          </Route>
         </Route>
 
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />}>
-          <Route index element={<DashboardHomeAdmin />} />
-          <Route path="categorys" element={<Categorys />} />
-          <Route path="sellers" element={<SellerManagement />} />
-          <Route path="users" element={<UsersManagement />} />
+        {/* Protected Admin Routes */}
+        <Route element={<AdminPrivateRoute />}>
+          <Route path="/admin/dashboard" element={<AdminDashboard />}>
+            <Route index element={<DashboardHomeAdmin />} />
+            <Route path="categorys" element={<Categorys />} />
+            <Route path="sellers" element={<SellerManagement />} />
+            <Route path="users" element={<UsersManagement />} />
+          </Route>
         </Route>
 
         {/* User Layout (with Header/Footer) */}
@@ -61,8 +68,8 @@ const Router = () => {
           <Route path="productlist" element={<ProductList />} />
           <Route path="products/:productId" element={<ProductDetail />} />
           <Route path="cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/orders" element={<OrderHistory />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="orders" element={<OrderHistory />} />
         </Route>
       </Routes>
     </BrowserRouter>
