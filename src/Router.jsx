@@ -19,10 +19,11 @@ import DashboardHomeAdmin from "./containers/admin/pages/dashboard/DashboardHome
 import SellerManagement from "./containers/admin/pages/seller/SellerManagement.jsx";
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
-import ProductDetail from "./containers/user/pages/ProductDetails.jsx";
-import Cart from "./containers/user/pages/Cart.jsx";
-import UsersManagement from "./containers/admin/pages/users/UsersManagement.jsx";
-import Checkout from "./containers/user/pages/CheckOut.jsx";
+import ProductDetail from './containers/user/pages/ProductDetails.jsx';
+import Cart from './containers/user/pages/Cart.jsx';
+import ProductList from "./containers/user/layout/ProductList.jsx";
+import UsersManagement from '../src/containers/admin/pages/users/UsersManagement.jsx'
+import Checkout from "./containers/user/pages/Checkout.jsx";
 import OrderHistory from "./containers/user/pages/OrderHistory.jsx";
 import SellerPrivateRoute from "./routes/SellerPrivateRoute.jsx";
 import AdminPrivateRoute from "./routes/AdminPrivateRoute.jsx";

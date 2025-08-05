@@ -8,6 +8,8 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+
   const [address, setAddress] = useState({
     name: "",
     street: "",
@@ -25,12 +27,11 @@ const Cart = () => {
     try {
       const res = await service.get(API.USER_CART_VIEW);
       if (res.data.success) {
-        const items = res.data.data.items;
-        setCartItems(items);
+        setCartItems(res.data.data.items);
         setTotal(res.data.data.meta.totalAmount);
       }
     } catch (err) {
-      console.error("❌ Failed to fetch cart:", err);
+      console.error("❌ Fetch cart error:", err?.response?.data || err.message);
     } finally {
       setLoading(false);
     }
@@ -44,7 +45,7 @@ const Cart = () => {
       });
       fetchCart();
     } catch (err) {
-      console.error("❌ Failed to update quantity:", err);
+      console.error("❌ Update quantity error:", err?.response?.data || err.message);
     }
   };
 
@@ -53,7 +54,7 @@ const Cart = () => {
       await service.delete(API.USER_CART_REMOVE_ITEM(itemId));
       fetchCart();
     } catch (err) {
-      console.error("❌ Failed to remove item:", err);
+      console.error("❌ Remove item error:", err?.response?.data || err.message);
     }
   };
 
@@ -62,26 +63,40 @@ const Cart = () => {
       await service.delete(API.USER_CART_CLEAR);
       fetchCart();
     } catch (err) {
-      console.error("❌ Failed to clear cart:", err);
+      console.error("❌ Clear cart error:", err?.response?.data || err.message);
     }
   };
 
-  const handleCheckout = () => {
-    const allFilled = Object.values(address).every((val) => val.trim() !== "");
-    if (!allFilled) {
-      alert("⚠️ Please fill in all shipping address fields.");
-      return;
-    }
+  const isAddressValid =
+    address.name.trim() &&
+    address.street.trim() &&
+    address.city.trim() &&
+    address.state.trim() &&
+    address.zip.trim() &&
+    address.country.trim();
 
-    localStorage.setItem("shippingAddress", JSON.stringify(address));
-    navigate("/checkout");
+  const handleCheckout = async () => {
+    if (!isAddressValid) return;
+    try {
+      setIsCheckoutLoading(true);
+      const res = await service.post(API.CREATE_ORDER, {
+        shippingAddress: address,
+      });
+      if (res.data.success) {
+        navigate("/orders"); // ✅ Fixed navigation path
+      }
+    } catch (err) {
+      console.error("❌ Order creation error:", err?.response?.data || err.message);
+    } finally {
+      setIsCheckoutLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchCart();
   }, []);
 
-  if (loading) return <p className="text-center text-lg mt-10">Loading...</p>;
+  if (loading) return <p className="text-center py-10 text-gray-500">Loading...</p>;
 
   return (
     <section className="max-w-7xl mx-auto p-6">
@@ -90,98 +105,123 @@ const Cart = () => {
       {cartItems.length === 0 ? (
         <p className="text-center text-gray-500 text-lg">Your cart is empty.</p>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: Cart Items */}
-          <div className="lg:col-span-2 space-y-6">
-            {cartItems.map(({ ItemId, product, requestedQuantity }) => (
-              <div
-                key={ItemId}
-                className="flex items-start gap-4 p-4 border rounded-lg shadow-sm bg-white"
-              >
-                <img
-                  src={
-                    product.images?.[0]
-                      ? `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
-                      : "https://via.placeholder.com/300x200"
-                  }
-                  alt={product.name}
-                  className="w-24 h-24 object-contain border rounded-md"
-                />
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <h4 className="text-lg font-semibold">{product.name}</h4>
-                    <button
-                      onClick={() => removeItem(ItemId)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                    >
-                      ✕ Remove
-                    </button>
+        <>
+          <div className="space-y-4">
+            {cartItems.map(({ ItemId, product, requestedQuantity }) => {
+              const imageUrl = product.images?.[0]
+                ? product.images[0].startsWith("http")
+                  ? product.images[0]
+                  : `${API.BASE_URL}/${product.images[0].replace(/^\/+/, "")}`
+                : "https://via.placeholder.com/300x200";
+
+              return (
+                <div
+                  key={ItemId}
+                  className="flex items-center justify-between border-b pb-3"
+                >
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={imageUrl}
+                      alt={product.name}
+                      className="w-20 h-20 object-contain border rounded-md"
+                    />
+                    <div>
+                      <h3 className="font-semibold">{product.name}</h3>
+                      <p className="text-blue-600">₹{product.price}</p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <button
+                          className="px-2 py-1 bg-gray-200 rounded"
+                          onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
+                        >
+                          -
+                        </button>
+                        <span>{requestedQuantity}</span>
+                        <button
+                          className="px-2 py-1 bg-gray-200 rounded"
+                          onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-blue-600 font-medium">₹{product.price}</p>
-                  <div className="mt-2 flex items-center gap-3">
-                    <button
-                      className="px-3 py-1 bg-gray-200 rounded"
-                      onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
-                    >
-                      −
-                    </button>
-                    <span className="font-semibold">{requestedQuantity}</span>
-                    <button
-                      className="px-3 py-1 bg-gray-200 rounded"
-                      onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => removeItem(ItemId)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    Remove
+                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Right: Address + Summary */}
-          <div className="bg-white p-6 rounded-lg shadow-lg space-y-6">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">📦 Shipping Address</h3>
-              <div className="space-y-3">
-                {["name", "street", "city", "state", "zip", "country"].map((field) => (
-                  <input
-                    key={field}
-                    type="text"
-                    placeholder={field[0].toUpperCase() + field.slice(1)}
-                    className="w-full border border-gray-300 p-2 rounded-md"
-                    value={address[field]}
-                    onChange={(e) => setAddress({ ...address, [field]: e.target.value })}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <h4 className="text-lg font-bold mb-2">Order Summary</h4>
-              <p className="flex justify-between mb-2">
-                <span>Items:</span> <span>{cartItems.length}</span>
-              </p>
-              <p className="flex justify-between font-semibold text-xl">
-                <span>Total:</span> <span>₹{total}</span>
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handleCheckout}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-medium"
-              >
-                Proceed to Checkout
-              </button>
-              <button
-                onClick={handleClearCart}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md"
-              >
-                Clear Cart
-              </button>
-            </div>
+          {/* Address Form */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Name"
+              className="border rounded-md p-2"
+              value={address.name}
+              onChange={(e) => setAddress({ ...address, name: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Street"
+              className="border rounded-md p-2"
+              value={address.street}
+              onChange={(e) => setAddress({ ...address, street: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="City"
+              className="border rounded-md p-2"
+              value={address.city}
+              onChange={(e) => setAddress({ ...address, city: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="State"
+              className="border rounded-md p-2"
+              value={address.state}
+              onChange={(e) => setAddress({ ...address, state: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="ZIP"
+              className="border rounded-md p-2"
+              value={address.zip}
+              onChange={(e) => setAddress({ ...address, zip: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              className="border rounded-md p-2"
+              value={address.country}
+              onChange={(e) => setAddress({ ...address, country: e.target.value })}
+            />
           </div>
-        </div>
+
+          {/* Actions */}
+          <div className="mt-6 text-right">
+            <p className="text-lg font-bold mb-2">Total: ₹{total}</p>
+            <button
+              className="bg-red-600 text-white px-4 py-2 rounded mr-2"
+              onClick={handleClearCart}
+            >
+              Clear Cart
+            </button>
+            <button
+              className={`px-4 py-2 rounded text-white ${
+                isAddressValid ? "bg-green-600" : "bg-gray-400 cursor-not-allowed"
+              }`}
+              disabled={!isAddressValid || isCheckoutLoading}
+              onClick={handleCheckout}
+            >
+              {isCheckoutLoading ? "Processing..." : "Checkout"}
+            </button>
+          </div>
+        </>
       )}
     </section>
   );

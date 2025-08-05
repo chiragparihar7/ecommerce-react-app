@@ -27,7 +27,15 @@ export const API = {
   USER_PROFILE: `${user}/profile`,
   USER_GET_ALL_PRODUCTS: `/product`,
   USER_PRODUCT_SEARCH: `${user}/products/search`,
-  USER_PRODUCT_DETAILS: `/product/details`,
+  PRODUCT_DETAILS: `/product/details`,
+  ADD_TO_CART: `${cart}/addIn`,
+  VIEW_CART: `${cart}/view`,
+  UPDATE_CART_ITEM: `${cart}/updateCart`,      // PUT: Update quantity of a cart item
+  REMOVE_CART_ITEM: `${cart}/deleteItems`, // ✅ Matches backend route
+    // DELETE: Remove an item from cart
+  CLEAR_CART: `${cart}/clear`, 
+  // SHIPPING_CART_TO_ORDER: `${order}/shipping`,  // Assuming `/order/shipping` is the endpoint
+  CREATE_ORDER: "/checkout",
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
@@ -36,7 +44,7 @@ export const API = {
   USER_CART_ADD: `${cart}/addIn`,
   USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`,
   USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
-  USER_PLACE_ORDER: `${order}/checkout`,
+  CREATE_ORDER: `${order}/checkout`, // Resolves to /order/checkout
   USER_ORDER_HISTORY: `${order}/orderHistory`,
   USER_ORDER_CANCEL: (orderId) => `${order}/${orderId}/cancel`,
 
