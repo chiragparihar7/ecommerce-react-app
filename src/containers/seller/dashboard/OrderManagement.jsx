@@ -33,8 +33,8 @@ const OrderManagement = () => {
 
   const handleStatusChange = async (orderId, itemId, newStatus) => {
     try {
-      const res = await DataService(sellerToken).patch(
-        API.SELLER_UPDATE_ORDER_STATUS(orderId, itemId),
+      const res = await DataService(sellerToken).post(
+        API.SELLER_UPDATE_ORDER_STATUS(orderId),
         { status: newStatus }
       );
       if (res.data.success) {
@@ -85,10 +85,9 @@ const OrderManagement = () => {
         <thead className="bg-gray-100 text-gray-700 text-sm">
           <tr>
             <th className="px-4 py-2 text-left">#</th>
+            <th className="px-4 py-2 text-left">Date</th>
             <th className="px-4 py-2 text-left">Customer</th>
-            <th className="px-4 py-2 text-left">Item</th>
-            <th className="px-4 py-2 text-left">Price</th>
-            <th className="px-4 py-2 text-left">Quantity</th>
+            <th className="px-4 py-2 text-left">Payment</th>
             <th className="px-4 py-2 text-left">Total</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Actions</th>
@@ -96,17 +95,15 @@ const OrderManagement = () => {
         </thead>
         <tbody className="text-sm">
           {orders.map((order, index) =>
-            order.items.map((item, itemIndex) => (
-              <tr key={`${order._id}-${item._id}`}>
+              <tr key={`${order._id}`}>
                 <td className="px-4 py-2">{index + 1}</td>
+                <td className="px-4 py-2">{new Date(order.date).toLocaleDateString()}</td>
                 <td className="px-4 py-2">{order.user || "N/A"}</td>
-                <td className="px-4 py-2">{item.productName || "Unnamed Item"}</td>
-                <td className="px-4 py-2">₹{item.price || 0}</td>
-                <td className="px-4 py-2">{item.quantity}</td>
-                <td className="px-4 py-2">₹{(item.quantity || 0) * (item.price || 0)}</td>
+                <td className="px-4 py-2">{order.paymentMethod || "N/A"}</td>
+                <td className="px-4 py-2">₹{order.totalAmount || 0}</td>
                 <td className="px-4 py-2">
                   <select
-                    value={item.status}
+                    value={order.status}
                     onChange={(e) =>
                       handleStatusChange(order.orderId, item.itemId, e.target.value)
                     }
@@ -127,7 +124,6 @@ const OrderManagement = () => {
                   </button>
                 </td>
               </tr>
-            ))
           )}
         </tbody>
       </table>

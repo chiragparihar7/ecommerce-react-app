@@ -15,7 +15,7 @@ const OrderHistory = () => {
       if (res.data.success && Array.isArray(res.data.orders)) {
         setOrders(res.data.orders);
       } else {
-        toast.warn("⚠️ No orders found.");
+        setOrders([]);
       }
     } catch (err) {
       console.error("❌ Failed to fetch orders:", err);
@@ -30,12 +30,10 @@ const OrderHistory = () => {
       const res = await DataService(userToken).put(API.USER_ORDER_CANCEL(orderId));
       if (res.data.success) {
         toast.success("✅ Order cancelled successfully.");
-
-        // Update the UI instantly by modifying the specific order
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             String(order.orderId || order._id || order.id) === String(orderId)
-              ? { ...order, status: "Cancelled" }
+              ? { ...order, status: "cancelled" }
               : order
           )
         );
@@ -48,9 +46,27 @@ const OrderHistory = () => {
     }
   };
 
+  // Fetch orders on mount and every 10 seconds to reflect seller updates
   useEffect(() => {
     fetchOrders();
+    const interval = setInterval(fetchOrders, 10000); // Poll every 10s
+    return () => clearInterval(interval);
   }, []);
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return "text-yellow-600";
+      case "shipped":
+        return "text-blue-600";
+      case "delivered":
+        return "text-green-600";
+      case "cancelled":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
+    }
+  };
 
   if (loading) {
     return <p className="text-center mt-10 text-lg">Loading orders...</p>;
@@ -76,19 +92,10 @@ const OrderHistory = () => {
               </p>
               <p>
                 <strong>Status:</strong>{" "}
-                <span
-                  className={`${
-                    order.status === "Cancelled"
-                      ? "text-red-600"
-                      : "text-blue-600"
-                  }`}
-                >
-                  {order.status || "Pending"}
+                <span className={getStatusColor(order.status)}>
+                  {order.status || "pending"}
                 </span>
               </p>
-              {
-                console.log("Order Details:", order.status)
-              }
 
               <div className="mt-3">
                 <p className="font-semibold">Items:</p>
@@ -110,9 +117,11 @@ const OrderHistory = () => {
                   Total: ₹{order.totalAmount}
                 </p>
 
-                {order.status !== "Cancelled" && (
+                {order.status?.toLowerCase() === "pending" && (
                   <button
-                    onClick={() => handleCancelOrder(order.orderId || order._id || order.id)}
+                    onClick={() =>
+                      handleCancelOrder(order.orderId || order._id || order.id)
+                    }
                     className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
                   >
                     Cancel Order
