@@ -6,9 +6,13 @@ const order = "/order";
 
 const BASE = "http://localhost:5000";
 // const BASE = "http://192.168.1.105:5000";
+
 export const API = {
   BASE_URL: BASE,
+
+  
   // Seller APIs
+  
   SELLER_LOGIN: `${seller}/login`,
   SELLER_SIGNUP: `${seller}/signup`,
   SELLER_ORDERS: `${seller}/orders`,
@@ -16,12 +20,14 @@ export const API = {
   SELLER_CATEGORY_LIST: `${seller}/category-list`,
   SELLER_PRODUCTS: `${seller}/products`,
   SELLER_PRODUCTS_DETAILS: `${seller}/products-details`,
-  SELLER_ALL_ORDERS: `${seller}/allOrders`, // ✅ Fetch seller orders
-  SELLER_UPDATE_ORDER_STATUS: (orderId, itemId) =>
-    `${seller}/orders/${orderId}/items/${itemId}`,
+  SELLER_ALL_ORDERS: `${seller}/allOrders`, // Fetch all seller orders
+  SELLER_UPDATE_ORDER_STATUS: (orderId) => `${order}/status/${orderId}`, // ✅ Matches backend
   SELLER_IMAGE_UPLOAD: `${seller}/image-upload`,
   SELLER_DELETE_ORDER: (orderId) => `${seller}/orders/${orderId}`,
+
+
   // User APIs
+  
   USER_REGISTER: `${user}/signup`,
   USER_LOGIN: `${user}/login`,
   USER_PROFILE: `${user}/profile`,
@@ -30,12 +36,10 @@ export const API = {
   PRODUCT_DETAILS: `/product/details`,
   ADD_TO_CART: `${cart}/addIn`,
   VIEW_CART: `${cart}/view`,
-  UPDATE_CART_ITEM: `${cart}/updateCart`,      // PUT: Update quantity of a cart item
-  REMOVE_CART_ITEM: `${cart}/deleteItems`, // ✅ Matches backend route
-    // DELETE: Remove an item from cart
-  CLEAR_CART: `${cart}/clear`, 
-  // SHIPPING_CART_TO_ORDER: `${order}/shipping`,  // Assuming `/order/shipping` is the endpoint
-  CREATE_ORDER: "/checkout",
+  UPDATE_CART_ITEM: `${cart}/updateCart`, // PUT: Update quantity
+  REMOVE_CART_ITEM: `${cart}/deleteItems`, // DELETE: Remove from cart
+  CLEAR_CART: `${cart}/clear`,
+  CREATE_ORDER: `${order}/checkout`, // POST: Checkout
   USER_GET_CATEGORIES: `${user}/products/categories`,
   USER_PROFILE_UPDATE: `${user}/profile/update`,
   USER_CHANGE_PASSWORD: `${user}/profile/password`,
@@ -44,26 +48,23 @@ export const API = {
   USER_CART_ADD: `${cart}/addIn`,
   USER_CART_UPDATE: (itemId) => `${cart}/updateCart/${itemId}`,
   USER_CART_REMOVE_ITEM: (itemId) => `${cart}/deleteItems/${itemId}`,
-  CREATE_ORDER: `${order}/checkout`, // Resolves to /order/checkout
   USER_ORDER_HISTORY: `${order}/orderHistory`,
   USER_ORDER_CANCEL: (orderId) => `${order}/${orderId}/cancel`,
 
+
   // Admin APIs
+  
   ADMIN_LOGIN: `${admin}/login`,
   ADMIN_CATEGORY_LIST: `${admin}/category-list`,
   ADMIN_CATEGORY_ADD: `${admin}/add-categories`,
   ADMIN_CATEGORY_REMOVE: `${admin}/categories`,
   ADMIN_SELLER_LIST: "/admin/allSellers",
-  ADMIN_SELLER_TOGGLE_STATUS: (sellerId) =>
-    `/admin/sellers/${sellerId}/toggle-status`,
+  ADMIN_SELLER_TOGGLE_STATUS: (sellerId) => `/admin/sellers/${sellerId}/toggle-status`,
   ADMIN_DELETE_SELLER: `${admin}/sellers`,
   ADMIN_ALL_USERS: `${admin}/allUsers`,
+  ADMIN_TOGGLE_USER_STATUS: (userId) => `/admin/users/${userId}/toggle-status`,
   ADMIN_PRODUCT_LIST: `${admin}/product-list`,
-  ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
-  ADMIN_ALL_USERS: `${admin}/allUsers`, // ✅ for user management
-  ADMIN_TOGGLE_USER_STATUS: (userId) =>
-    `${admin}/users/${userId}/toggle-status`, // ✅ toggle active/block
-  ADMIN_PRODUCT_LIST: `${admin}/product-list`,
-  ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`,
+  ADMIN_SALES_ANALYTICS: `${admin}/analytics/sales`
 };
+
 export default API;
