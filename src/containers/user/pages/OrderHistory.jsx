@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
-import { toast } from "react-toastify"; // ✅ using your existing toast system
+import { toast } from "react-toastify";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -30,10 +30,13 @@ const OrderHistory = () => {
       const res = await DataService(userToken).put(API.USER_ORDER_CANCEL(orderId));
       if (res.data.success) {
         toast.success("✅ Order cancelled successfully.");
-        // Instant update in UI without reload
-        setOrders((prev) =>
-          prev.map((order) =>
-            order.orderId === orderId ? { ...order, status: "Cancelled" } : order
+
+        // Update the UI instantly by modifying the specific order
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            String(order.orderId || order._id || order.id) === String(orderId)
+              ? { ...order, status: "Cancelled" }
+              : order
           )
         );
       } else {
@@ -49,7 +52,9 @@ const OrderHistory = () => {
     fetchOrders();
   }, []);
 
-  if (loading) return <p className="text-center mt-10 text-lg">Loading orders...</p>;
+  if (loading) {
+    return <p className="text-center mt-10 text-lg">Loading orders...</p>;
+  }
 
   return (
     <section className="max-w-5xl mx-auto p-6">
@@ -61,7 +66,7 @@ const OrderHistory = () => {
         <div className="space-y-6">
           {orders.map((order, index) => (
             <div
-              key={order.orderId || index}
+              key={order.orderId || order._id || index}
               className="p-4 border rounded shadow bg-white"
             >
               <p className="font-semibold text-lg mb-2">Order #{index + 1}</p>
@@ -73,7 +78,9 @@ const OrderHistory = () => {
                 <strong>Status:</strong>{" "}
                 <span
                   className={`${
-                    order.status === "Cancelled" ? "text-red-600" : "text-blue-600"
+                    order.status === "Cancelled"
+                      ? "text-red-600"
+                      : "text-blue-600"
                   }`}
                 >
                   {order.status || "Pending"}
@@ -102,7 +109,7 @@ const OrderHistory = () => {
 
                 {order.status !== "Cancelled" && (
                   <button
-                    onClick={() => handleCancelOrder(order.orderId)}
+                    onClick={() => handleCancelOrder(order.orderId || order._id || order.id)}
                     className="bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600"
                   >
                     Cancel Order

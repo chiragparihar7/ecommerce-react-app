@@ -8,7 +8,6 @@ const OrderManagement = () => {
   const sellerToken = useSelector((state) => state.seller.seller.token);
   const [orders, setOrders] = useState([]);
 
-  // ✅ Fetch orders on load
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -32,24 +31,14 @@ const OrderManagement = () => {
     if (sellerToken) fetchOrders();
   }, [sellerToken]);
 
-  // ✅ Update item status (API call + local state update)
   const handleStatusChange = async (orderId, itemId, newStatus) => {
-    console.log("Updating status for:", { orderId, itemId, newStatus });
-
     try {
       const res = await DataService(sellerToken).patch(
         API.SELLER_UPDATE_ORDER_STATUS(orderId, itemId),
         { status: newStatus }
       );
-      console.log("🧪 Status Update Triggered:", {
-        orderId,
-        itemId,
-        newStatus,
-      });
       if (res.data.success) {
         toast.success("Status updated successfully");
-
-        // ✅ Update local state for that specific item
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
             order._id === orderId
@@ -66,15 +55,11 @@ const OrderManagement = () => {
         toast.error(res.data.message || "Failed to update status");
       }
     } catch (error) {
-      console.error(
-        "Failed to update order status",
-        error?.response?.data || error
-      );
+      console.error("Failed to update order status", error?.response?.data || error);
       toast.error(error?.response?.data?.message || "Failed to update status");
     }
   };
 
-  // ✅ Optional delete function (local only unless backend API exists)
   const handleDelete = async (orderId) => {
     if (window.confirm("Are you sure to delete this order?")) {
       try {
@@ -82,13 +67,13 @@ const OrderManagement = () => {
           API.SELLER_DELETE_ORDER(orderId)
         );
         if (res.data.success) {
-          toast.success("Order Delete Successfully");
+          toast.success("Order deleted successfully");
           setOrders((prev) => prev.filter((order) => order._id !== orderId));
         } else {
-          toast.error("Failed To delete order");
+          toast.error("Failed to delete order");
         }
       } catch (err) {
-        toast.error("Error Deleting Order");
+        toast.error("Error deleting order");
       }
     }
   };
@@ -99,7 +84,7 @@ const OrderManagement = () => {
       <table className="min-w-full bg-white shadow-md rounded-xl overflow-hidden">
         <thead className="bg-gray-100 text-gray-700 text-sm">
           <tr>
-            <th className="px-4 py-2 text-left">Order ID</th>
+            <th className="px-4 py-2 text-left">#</th>
             <th className="px-4 py-2 text-left">Customer</th>
             <th className="px-4 py-2 text-left">Item</th>
             <th className="px-4 py-2 text-left">Price</th>
@@ -112,25 +97,18 @@ const OrderManagement = () => {
         <tbody className="text-sm">
           {orders.map((order, index) =>
             order.items.map((item, itemIndex) => (
-              <tr key={item._id}>
-                <td className="px-4 py-2">{index + 1}</td> {/* Serial number */}
+              <tr key={`${order._id}-${item._id}`}>
+                <td className="px-4 py-2">{index + 1}</td>
                 <td className="px-4 py-2">{order.user || "N/A"}</td>
-                <td className="px-4 py-2">
-                  {item.productName || "Unnamed Item"}
-                </td>
+                <td className="px-4 py-2">{item.productName || "Unnamed Item"}</td>
                 <td className="px-4 py-2">₹{item.price || 0}</td>
                 <td className="px-4 py-2">{item.quantity}</td>
-                <td className="px-4 py-2">₹{item.quantity * item.price}</td>
-                <td className="px-4 py-2">{item.status}</td>
-                <td className="px-4 py-2 space-x-2">
+                <td className="px-4 py-2">₹{(item.quantity || 0) * (item.price || 0)}</td>
+                <td className="px-4 py-2">
                   <select
                     value={item.status}
                     onChange={(e) =>
-                      handleStatusChange(
-                        order.orderId,
-                        item.itemId,
-                        e.target.value
-                      )
+                      handleStatusChange(order.orderId, item.itemId, e.target.value)
                     }
                     className="border rounded px-2 py-1 text-sm"
                   >
@@ -139,9 +117,11 @@ const OrderManagement = () => {
                     <option value="delivered">Delivered</option>
                     <option value="cancelled">Cancelled</option>
                   </select>
+                </td>
+                <td className="px-4 py-2">
                   <button
                     onClick={() => handleDelete(order.orderId)}
-                    className="text-red-600 hover:underline ml-2"
+                    className="text-red-600 hover:underline"
                   >
                     Delete
                   </button>
