@@ -20,7 +20,7 @@ import SellerManagement from "./containers/admin/pages/seller/SellerManagement.j
 import ChangePassword from "./containers/user/layout/Change-password.jsx";
 import UserLayout from "./containers/user/layout/UserLayout.jsx";
 import ProductDetail from './containers/user/pages/ProductDetails.jsx';
-import Cart from './containers/user/pages/Cart.jsx';  
+import Cart from './containers/user/pages/Cart.jsx';
 import UsersManagement from '../src/containers/admin/pages/users/UsersManagement.jsx'
 import Checkout from "./containers/user/pages/Checkout.jsx";
 import OrderHistory from "./containers/user/pages/OrderHistory.jsx";
