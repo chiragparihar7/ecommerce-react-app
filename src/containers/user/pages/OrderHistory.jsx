@@ -86,6 +86,9 @@ const OrderHistory = () => {
                   {order.status || "Pending"}
                 </span>
               </p>
+              {
+                console.log("Order Details:", order.status)
+              }
 
               <div className="mt-3">
                 <p className="font-semibold">Items:</p>
