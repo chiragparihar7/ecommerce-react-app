@@ -45,7 +45,10 @@ const Cart = () => {
       });
       fetchCart();
     } catch (err) {
-      console.error("❌ Update quantity error:", err?.response?.data || err.message);
+      console.error(
+        "❌ Update quantity error:",
+        err?.response?.data || err.message
+      );
     }
   };
 
@@ -54,7 +57,10 @@ const Cart = () => {
       await service.delete(API.USER_CART_REMOVE_ITEM(itemId));
       fetchCart();
     } catch (err) {
-      console.error("❌ Remove item error:", err?.response?.data || err.message);
+      console.error(
+        "❌ Remove item error:",
+        err?.response?.data || err.message
+      );
     }
   };
 
@@ -74,7 +80,6 @@ const Cart = () => {
     address.state.trim() &&
     address.zip.trim() &&
     address.country.trim();
-
   const handleCheckout = async () => {
     if (!isAddressValid) return;
     try {
@@ -83,10 +88,20 @@ const Cart = () => {
         shippingAddress: address,
       });
       if (res.data.success) {
-        navigate("/orders"); // ✅ Fixed navigation path
+        // ✅ Dispatch custom event to refresh cart badge in header
+        window.dispatchEvent(new Event("cartUpdated"));
+
+        // ✅ Optional: clear local cart state
+        setCartItems([]);
+        setTotal(0);
+
+        navigate("/orders");
       }
     } catch (err) {
-      console.error("❌ Order creation error:", err?.response?.data || err.message);
+      console.error(
+        "❌ Order creation error:",
+        err?.response?.data || err.message
+      );
     } finally {
       setIsCheckoutLoading(false);
     }
@@ -96,7 +111,8 @@ const Cart = () => {
     fetchCart();
   }, []);
 
-  if (loading) return <p className="text-center py-10 text-gray-500">Loading...</p>;
+  if (loading)
+    return <p className="text-center py-10 text-gray-500">Loading...</p>;
 
   return (
     <section className="max-w-7xl mx-auto p-6">
@@ -131,14 +147,18 @@ const Cart = () => {
                       <div className="mt-2 flex items-center gap-2">
                         <button
                           className="px-2 py-1 bg-gray-200 rounded"
-                          onClick={() => updateQuantity(ItemId, requestedQuantity - 1)}
+                          onClick={() =>
+                            updateQuantity(ItemId, requestedQuantity - 1)
+                          }
                         >
                           -
                         </button>
                         <span>{requestedQuantity}</span>
                         <button
                           className="px-2 py-1 bg-gray-200 rounded"
-                          onClick={() => updateQuantity(ItemId, requestedQuantity + 1)}
+                          onClick={() =>
+                            updateQuantity(ItemId, requestedQuantity + 1)
+                          }
                         >
                           +
                         </button>
@@ -170,7 +190,9 @@ const Cart = () => {
               placeholder="Street"
               className="border rounded-md p-2"
               value={address.street}
-              onChange={(e) => setAddress({ ...address, street: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, street: e.target.value })
+              }
             />
             <input
               type="text"
@@ -184,7 +206,9 @@ const Cart = () => {
               placeholder="State"
               className="border rounded-md p-2"
               value={address.state}
-              onChange={(e) => setAddress({ ...address, state: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, state: e.target.value })
+              }
             />
             <input
               type="text"
@@ -198,7 +222,9 @@ const Cart = () => {
               placeholder="Country"
               className="border rounded-md p-2"
               value={address.country}
-              onChange={(e) => setAddress({ ...address, country: e.target.value })}
+              onChange={(e) =>
+                setAddress({ ...address, country: e.target.value })
+              }
             />
           </div>
 
@@ -213,7 +239,9 @@ const Cart = () => {
             </button>
             <button
               className={`px-4 py-2 rounded text-white ${
-                isAddressValid ? "bg-green-600" : "bg-gray-400 cursor-not-allowed"
+                isAddressValid
+                  ? "bg-green-600"
+                  : "bg-gray-400 cursor-not-allowed"
               }`}
               disabled={!isAddressValid || isCheckoutLoading}
               onClick={handleCheckout}
