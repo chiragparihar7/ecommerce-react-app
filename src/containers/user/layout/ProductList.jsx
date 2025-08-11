@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +18,10 @@ const ProductList = () => {
         const res = await DataService(userToken).get(API.USER_GET_ALL_PRODUCTS);
         setProducts(res.data.products || []);
       } catch (error) {
-        console.error("❌ Failed to fetch products", error?.response?.data || error.message);
+        console.error(
+          "❌ Failed to fetch products",
+          error?.response?.data || error.message
+        );
         toast.error("Failed to load products");
       } finally {
         setLoading(false);
@@ -42,22 +44,28 @@ const ProductList = () => {
       }));
       toast.success("Added to cart ✅");
     } catch (error) {
-      console.error("❌ Add to cart failed:", error.response?.data || error.message);
+      console.error(
+        "❌ Add to cart failed:",
+        error.response?.data || error.message
+      );
       toast.error("Failed to add to cart");
     }
   };
 
   const updateQuantity = async (itemId, newQuantity) => {
-     if (newQuantity < 1) return;
-     try {
-       await DataService(userToken).patch(API.USER_CART_UPDATE(itemId), {
-         quantity: newQuantity,
-       });
-       fetchCart();
-     } catch (err) {
-       console.error("❌ Update quantity error:", err?.response?.data || err.message);
-     }
-   };
+    if (newQuantity < 1) return;
+    try {
+      await DataService(userToken).patch(API.USER_CART_UPDATE(itemId), {
+        quantity: newQuantity,
+      });
+      fetchCart();
+    } catch (err) {
+      console.error(
+        "❌ Update quantity error:",
+        err?.response?.data || err.message
+      );
+    }
+  };
 
   const increment = (e, productId) => {
     e.stopPropagation();
@@ -84,7 +92,10 @@ const ProductList = () => {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white p-4 rounded-lg shadow animate-pulse">
+            <div
+              key={i}
+              className="bg-white p-4 rounded-lg shadow animate-pulse"
+            >
               <div className="h-48 bg-gray-200 rounded mb-4"></div>
               <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
               <div className="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
@@ -118,8 +129,12 @@ const ProductList = () => {
                   />
                 </div>
 
-                <h3 className="text-lg font-semibold hover:underline">{product.name}</h3>
-                <p className="text-gray-600 text-sm truncate">{product.description}</p>
+                <h3 className="text-lg font-semibold hover:underline">
+                  {product.name}
+                </h3>
+                <p className="text-gray-600 text-sm truncate">
+                  {product.description}
+                </p>
                 <p className="mt-2 text-blue-600 font-bold">₹{product.price}</p>
 
                 <div className="mt-4">
