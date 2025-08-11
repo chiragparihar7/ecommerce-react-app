@@ -32,16 +32,17 @@ const OrderManagement = () => {
         toast.success("Status updated successfully");
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
-            order.orderId === orderId
-              ? { ...order, status: newStatus }
-              : order
+            order.orderId === orderId ? { ...order, status: newStatus } : order
           )
         );
       } else {
         toast.error(res.data.message || "Failed to update status");
       }
     } catch (error) {
-      console.error("Failed to update order status", error?.response?.data || error);
+      console.error(
+        "Failed to update order status",
+        error?.response?.data || error
+      );
       toast.error(error?.response?.data?.message || "Failed to update status");
     }
   };
@@ -54,7 +55,9 @@ const OrderManagement = () => {
         );
         if (res.data.success) {
           toast.success("Order deleted successfully");
-          setOrders((prev) => prev.filter((order) => order.orderId !== orderId));
+          setOrders((prev) =>
+            prev.filter((order) => order.orderId !== orderId)
+          );
         } else {
           toast.error("Failed to delete order");
         }
@@ -82,9 +85,11 @@ const OrderManagement = () => {
         <tbody className="text-sm">
           {orders.map((order, index) => (
             <tr key={order.orderId}>
-              <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">
-                {new Date(order.createdAt).toLocaleDateString()}
+                #{String(order.orderId).padStart(6)}
+              </td>
+              <td className="px-4 py-2">
+                {new Date(order.date).toLocaleString()}
               </td>
               <td className="px-4 py-2">{order.user || "N/A"}</td>
               <td className="px-4 py-2">{order.paymentMethod || "N/A"}</td>

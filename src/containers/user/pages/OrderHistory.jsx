@@ -85,7 +85,7 @@ const OrderHistory = () => {
               key={order.orderId || order._id || index}
               className="p-4 border rounded shadow bg-white"
             >
-              <p className="font-semibold text-lg mb-2">Order #{index + 1}</p>
+              <p className="font-semibold text-lg mb-2">Order #{order.orderId}</p>
               <p>
                 <strong>Date:</strong>{" "}
                 {new Date(order.date).toLocaleString()}
